@@ -26,7 +26,7 @@ public class CalendarHomePage extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    public ArrayList<SampleEvents> sampledata = new ArrayList();
+    public ArrayList<eventBlock> sampledata = new ArrayList();
 
 
     @Override
@@ -38,9 +38,11 @@ public class CalendarHomePage extends AppCompatActivity {
 
     private void initializeSampleData() {
 
-        sampledata.add(new SampleEvents("Grooming", new SimpleDateFormat("3/18/2018")));
-        sampledata.add(new SampleEvents("Vet", new SimpleDateFormat("3/10/2018")));
-        sampledata.add(new SampleEvents("Playdate", new SimpleDateFormat("3/15/2018")));
+        sampledata.add(new eventBlock("Grooming","3/10/2018"));
+        sampledata.add(new eventBlock("Vet", "3/15/2018"));
+        sampledata.add(new eventBlock("Playdate", "3/18/2018"));
+        sampledata.add(new eventBlock("Vet", "3/15/2018"));
+        sampledata.add(new eventBlock("Playdate", "3/18/2018"));
     }
 
     @Override

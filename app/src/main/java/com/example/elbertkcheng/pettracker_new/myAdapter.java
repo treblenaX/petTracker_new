@@ -16,10 +16,10 @@ import java.util.Scanner;
  * Created by elber on 3/1/2018.
  */
 
-class myAdapter extends ArrayAdapter<SampleEvents> {
-    ArrayList<SampleEvents> example;
+class myAdapter extends ArrayAdapter<eventBlock> {
+    ArrayList<eventBlock> example;
 
-    myAdapter(Context context, ArrayList<SampleEvents> example)
+    myAdapter(Context context, ArrayList<eventBlock> example)
     {
         //Context grabbed from the activity - background information
         //Layout is the custom row view template
