@@ -5,15 +5,28 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toolbar;
 
-public class CalendarHomePage extends AppCompatActivity {
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
 
+public class CalendarHomePage extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    public ArrayList<SampleEvents> sampledata = new ArrayList();
 
 
     @Override
@@ -23,17 +36,28 @@ public class CalendarHomePage extends AppCompatActivity {
         return true;
     }
 
+    private void initializeSampleData() {
+
+        sampledata.add(new SampleEvents("Grooming", new SimpleDateFormat("3/18/2018")));
+        sampledata.add(new SampleEvents("Vet", new SimpleDateFormat("3/10/2018")));
+        sampledata.add(new SampleEvents("Playdate", new SimpleDateFormat("3/15/2018")));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_home_page);
 
-        //Title of the app as the header
-        getSupportActionBar().setTitle("PetTracker");
+        initializeSampleData();
 
-        //Navigation Drawer Menu stuff
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        //ListView
 
+        ListAdapter mAdapter = new myAdapter(this, sampledata);
+        ListView mListView = findViewById(R.id.list_view);
+        mListView.setAdapter(mAdapter);
+
+
+        //Navigation Menu
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
 
@@ -43,15 +67,11 @@ public class CalendarHomePage extends AppCompatActivity {
                     {
                         item.setChecked(true);
 
-                        //close drawer when item it's tapped
-                        mDrawerLayout.closeDrawers();
-
-
                         //Actions of the items
                         switch (item.getItemId())
                         {
                             case R.id.nav_add_event:
-
+                                startActivity(new Intent(CalendarHomePage.this, AddEvent.class));
                                 Log.v("add event", "event added");
                                 return true;
                             case R.id.nav_settings:
