@@ -21,7 +21,7 @@ public class LogIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
-        //Create the widgets
+        //com.example.elbertkcheng.pettracker_new.Create the widgets
         EditText accountEmail = (EditText)findViewById(R.id.accountEmail);
         EditText password = (EditText)findViewById(R.id.Password);
         Button signUp = (Button)findViewById(R.id.SignUp);

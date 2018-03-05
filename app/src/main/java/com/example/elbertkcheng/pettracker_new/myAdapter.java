@@ -39,9 +39,18 @@ class myAdapter extends ArrayAdapter<eventBlock> {
         TextView tvEventDate = (TextView) mView.findViewById(R.id.eventDate);
 
         Scanner scan = new Scanner(singleItemLocation);
+        String grayText = "";
 
         tvEventName.setText(scan.next());
-        tvEventDate.setText(scan.next());
+
+        while (scan.hasNext())
+        {
+            grayText += scan.next() + " ";
+        }
+
+        System.out.print(grayText);
+        tvEventDate.setText(grayText);
+
         return mView;
     }
 
