@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,35 +15,55 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class LogIn extends AppCompatActivity {
+    private static final String LOGIN_DATABASE = "loginDatabase.json";
     EditText username_LOGIN;
     EditText password_LOGIN;
     Button signUp_LOGIN;
     Button ok_LOGIN;
 
     //Grabs the login JSON from assets folder
-    public String loadJSONFromAsset(Context context)
-    {
-        String json = null;
-        try {
-            InputStream is = context.getAssets().open("loginDatabase.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return json;
-    }
 
-    public boolean compareData(String username_input, String password_input) throws JSONException {
-        JSONArray arr = new JSONArray(loadJSONFromAsset(this));
+    private String readFromFile()
+    {
+        String str = "";
+        try {
+            InputStream inputStream = getApplicationContext().openFileInput(LOGIN_DATABASE);
+
+            if (inputStream != null)
+            {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String recieveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((recieveString = bufferedReader.readLine()) != null)
+                {
+                    stringBuilder.append(recieveString);
+                }
+
+                inputStream.close();
+                str = stringBuilder.toString();
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return str;
+    }
+    public boolean compareData(String username_input, String password_input) throws JSONException, FileNotFoundException {
+
+        JSONArray arr = new JSONArray(readFromFile());
 
         for(int i = 0; i < arr.length(); i++)
         {
@@ -62,10 +83,33 @@ public class LogIn extends AppCompatActivity {
 
     }
 
+    public void initializeLoginDatabase(Context context)
+    {
+        String filename = LOGIN_DATABASE;
+        String content =
+                "[\n" +
+                        "\t{\n" +
+                        "\t\t\"username\":\"exampleuser\",\n" +
+                        "\t\t\"password\":\"password\"\n" +
+                        "\t}\n" +
+                        "]";
+
+        try {
+            OutputStreamWriter osw = new OutputStreamWriter(openFileOutput(filename, Context.MODE_PRIVATE));
+            osw.write(content);
+            osw.close();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
+        initializeLoginDatabase(this);
 
         //com.example.elbertkcheng.pettracker_new.Create the widgets
         username_LOGIN = (EditText)findViewById(R.id.username_LOGIN);
@@ -106,6 +150,8 @@ public class LogIn extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Log-in information invalid, please try again!", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }

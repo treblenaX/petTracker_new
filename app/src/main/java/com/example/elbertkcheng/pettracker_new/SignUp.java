@@ -1,5 +1,7 @@
 package com.example.elbertkcheng.pettracker_new;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +12,11 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class SignUp extends AppCompatActivity {
     EditText username;
@@ -18,15 +24,29 @@ public class SignUp extends AppCompatActivity {
     EditText passwordRetry;
     Button signupButton;
 
-    public static void addJSONObject(String username, String password, JSONObject obj) throws JSONException {
-        JSONObject object = new JSONObject();
+    public void addJSONObject(String username, String password) throws JSONException {
+        JSONObject obj = new JSONObject();
+
         obj.put("Username", username);
         obj.put("Password", password);
+
     }
 
-    public static void createJSONFile()
+    public String loadJSONFromAsset(Context context)
     {
-
+        String json = null;
+        try {
+            InputStream is = context.getAssets().open("loginDatabase.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
     @Override
@@ -39,11 +59,17 @@ public class SignUp extends AppCompatActivity {
         passwordRetry = (EditText)findViewById(R.id.passwordRetry_SIGNUP);
         signupButton = (Button)findViewById(R.id.signup_SIGNUP);
 
-        signupButton.setOnClickListener(
-                new View.OnClickListener()
+        signupButton.setOnClickListener(new View.OnClickListener()
                 {
                     public void onClick(View view)
                     {
+                        try {
+                            addJSONObject(username.getText().toString(), password.getText().toString());
+                            startActivity(new Intent(SignUp.this, LogIn.class));
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
                     }
                 }
