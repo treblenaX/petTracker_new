@@ -1,5 +1,6 @@
 package com.example.elbertkcheng.pettracker_new;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.text.DateFormat;
@@ -13,13 +14,13 @@ import java.util.Date;
  * Created by elber on 3/2/2018.
  */
 
-public class eventBlock {
+public class eventBlock implements Comparable<eventBlock>{
     private static final String eventDatePatternInput = "MM/dd/yyyy";
     private static final String eventDatePatternOutput = "EEE, d MMM 'at' hh:mm aa";
     private int eventID;
     private String eventName;
     private String eventDate;
-    public Date eventDateObject;
+    private Date eventDateObject;
 
     //Labels table name
     public static final String TABLE = "Events";
@@ -74,5 +75,19 @@ public class eventBlock {
 
     public void setEventID(int eventID) {
         this.eventID = eventID;
+    }
+
+    public Date getEventDateTime()
+    {
+        return this.eventDateObject;
+    }
+
+    @Override
+    public int compareTo(eventBlock eb) {
+        if (getEventDateTime() == null || eb.getEventDateTime() == null)
+        {
+            return 0;
+        }
+        return getEventDateTime().compareTo(eb.getEventDateTime());
     }
 }

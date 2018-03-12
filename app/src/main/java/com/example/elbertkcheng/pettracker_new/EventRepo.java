@@ -19,9 +19,9 @@ import java.util.HashMap;
 public class EventRepo {
     private DBHelper dbHelper;
 
-    public EventRepo(Context context)
+    public EventRepo(Context context, String database)
     {
-        dbHelper = new DBHelper(context);
+        dbHelper = new DBHelper(context, database);
     }
 
     public int insert(eventBlock event)

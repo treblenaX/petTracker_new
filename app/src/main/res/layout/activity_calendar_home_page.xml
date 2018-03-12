@@ -6,6 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/caldroid_white"
     tools:context="com.example.elbertkcheng.pettracker_new.CalendarHomePage">
 
 
@@ -16,10 +17,10 @@
         android:orientation="vertical">
 
         <CalendarView
-            android:id="@+id/calendarView2"
+            android:id="@+id/calendarView"
             android:layout_width="match_parent"
-            android:layout_height="309dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="346dp"
+            android:layout_marginBottom="0dp"
             android:layout_weight="0" />
 
         <!-- Line break -->
@@ -29,10 +30,25 @@
             android:layout_height="1dp"
             android:background="@android:color/darker_gray" />
 
+        <TextView
+            android:id="@+id/upcoming_events"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:backgroundTint="@android:color/white"
+            android:text="Upcoming Events"
+            android:textColor="@android:color/tertiary_text_light"
+            android:textSize="14sp"
+            tools:text="Upcoming Events" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
         <ListView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="184dp"
             android:layout_weight="1"
             android:scrollbars="vertical" />
 
