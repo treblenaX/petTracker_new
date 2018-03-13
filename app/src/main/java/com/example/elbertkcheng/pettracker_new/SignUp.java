@@ -9,44 +9,85 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class SignUp extends AppCompatActivity {
+    private static final String LOGIN_DATABASE = "loginDatabase.json";
     EditText username;
     EditText password;
     EditText passwordRetry;
     Button signupButton;
 
-    public void addJSONObject(String username, String password) throws JSONException {
-        JSONObject obj = new JSONObject();
 
-        obj.put("Username", username);
-        obj.put("Password", password);
+    private String readFromFile()
+    {
+        String str = "";
+        try {
+            InputStream inputStream = getApplicationContext().openFileInput(LOGIN_DATABASE);
 
+            if (inputStream != null)
+            {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((receiveString = bufferedReader.readLine()) != null)
+                {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                str = stringBuilder.toString();
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return str;
     }
 
-    public String loadJSONFromAsset(Context context)
-    {
-        String json = null;
-        try {
-            InputStream is = context.getAssets().open("loginDatabase.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+    public void addJSONObject(String username, String password) throws JSONException, IOException {
+        //Transfers the old data into the new data file.
+        JSONArray arr = new JSONArray(readFromFile());
+        JSONArray newArr = new JSONArray();
+
+        for(int i = 0; i < arr.length(); i+=2)
+        {
+            String dbUsername = arr.getJSONObject(i).getString("username");
+            String dbPassword = arr.getJSONObject(i).getString("password");
+
+            JSONObject obj = new JSONObject();
+
+            newArr.put(obj);
+            obj.put("username", dbUsername);
+            obj.put("password", dbPassword);
         }
-        return json;
+        //Delete file for the new file to come in
+        deleteFile(LOGIN_DATABASE);
+
+        JSONObject obj = new JSONObject();
+
+        newArr.put(obj);
+        obj.put("username", username);
+        obj.put("password", password);
+
+        OutputStreamWriter osw = new OutputStreamWriter(openFileOutput(LOGIN_DATABASE, Context.MODE_PRIVATE));
+        osw.write(newArr.toString());
+        osw.close();
     }
 
     @Override
@@ -68,6 +109,10 @@ public class SignUp extends AppCompatActivity {
                             startActivity(new Intent(SignUp.this, LogIn.class));
 
                         } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
 

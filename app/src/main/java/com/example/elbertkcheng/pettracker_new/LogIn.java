@@ -16,9 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -83,21 +85,29 @@ public class LogIn extends AppCompatActivity {
 
     }
 
-    public void initializeLoginDatabase(Context context)
-    {
-        String filename = LOGIN_DATABASE;
-        String content =
-                "[\n" +
-                        "\t{\n" +
-                        "\t\t\"username\":\"exampleuser\",\n" +
-                        "\t\t\"password\":\"password\"\n" +
-                        "\t}\n" +
-                        "]";
+    public boolean checkDatabase() {
+        File file = getApplicationContext().getFileStreamPath(LOGIN_DATABASE);
+        if(!file.exists())
+        {
+            return false;
+        }
+        return true;
+    }
 
+    public void initializeLoginDatabase()
+    {
         try {
-            OutputStreamWriter osw = new OutputStreamWriter(openFileOutput(filename, Context.MODE_PRIVATE));
-            osw.write(content);
+            JSONArray arr = new JSONArray();
+            JSONObject obj = new JSONObject();
+
+            arr.put(obj);
+            obj.put("username", "exampleuser");
+            obj.put("password", "password");
+
+            OutputStreamWriter osw = new OutputStreamWriter(openFileOutput(LOGIN_DATABASE, Context.MODE_PRIVATE));
+            osw.write(arr.toString());
             osw.close();
+
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -109,7 +119,13 @@ public class LogIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
-        initializeLoginDatabase(this);
+        //Checks if database already exists
+        if (checkDatabase() == false)
+        {
+            //Creates new database if none exists
+            Log.i("CREATING DATABASE", "DATABASE DIDN'T EXIST, CREATING DATABASE");
+            initializeLoginDatabase();
+        }
 
         //com.example.elbertkcheng.pettracker_new.Create the widgets
         username_LOGIN = (EditText)findViewById(R.id.username_LOGIN);
