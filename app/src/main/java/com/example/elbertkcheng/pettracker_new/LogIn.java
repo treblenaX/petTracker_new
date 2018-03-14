@@ -158,7 +158,12 @@ public class LogIn extends AppCompatActivity {
 
                     if (compareData(username_LOGIN.getText().toString(), password_LOGIN.getText().toString()) == true)
                     {
-                        startActivity(new Intent(LogIn.this, CalendarHomePage.class));
+                        String user = username_LOGIN.getText().toString();
+                        Intent intent = new Intent(getApplicationContext(), CalendarHomePage.class);
+                        intent.setClass(getApplicationContext(), CalendarHomePage.class);
+                        intent.putExtra("user", user);
+                        startActivity(intent);
+
                     }
                     else
                     {

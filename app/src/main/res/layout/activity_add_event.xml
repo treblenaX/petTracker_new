@@ -6,4 +6,107 @@
     android:layout_height="match_parent"
     tools:context="com.example.elbertkcheng.pettracker_new.AddEvent">
 
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/addEventName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            tools:text="Add Event Name" />
+
+        <Spinner
+            android:id="@+id/MonthDropDown"
+            android:layout_width="70dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="136dp"
+            android:background="@color/caldroid_lighter_gray"
+            android:minWidth="150dp"
+            app:layout_constraintHorizontal_bias="0.053"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
+
+        <Spinner
+            android:id="@+id/DayDropDown"
+            android:layout_width="70dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="136dp"
+            android:background="@color/caldroid_lighter_gray"
+            android:minWidth="150dp"
+            app:layout_constraintHorizontal_bias="0.402"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
+
+        <Spinner
+            android:id="@+id/YearDropDown"
+            android:layout_width="117dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="136dp"
+            android:background="@color/caldroid_lighter_gray"
+            android:minWidth="150dp"
+            app:layout_constraintHorizontal_bias="0.888"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
+
+        <Spinner
+            android:id="@+id/StartTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="268dp"
+            android:background="@color/caldroid_lighter_gray"
+            android:entries="@android:drawable/ic_menu_my_calendar"
+            android:minWidth="150dp"
+            app:layout_constraintHorizontal_bias="0.134"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
+
+        <Spinner
+            android:id="@+id/EndTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="28dp"
+            android:layout_marginTop="268dp"
+            android:background="@color/caldroid_lighter_gray"
+            android:entries="@android:drawable/ic_menu_my_calendar"
+            android:minWidth="150dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
+
+        <EditText
+            android:id="@+id/addEventAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName"
+            tools:text="Add Event Address" />
+
+        <Button
+            android:id="@+id/AddEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="56dp"
+            android:text="Add Event"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

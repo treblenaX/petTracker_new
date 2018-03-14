@@ -86,6 +86,37 @@ public class EventRepo {
         return eventList;
     }
 
+    public ArrayList<eventBlock> getUserEventList(String username) throws ParseException {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        ArrayList<eventBlock> eventList = new ArrayList<>();
+        String query = "SELECT " + eventBlock.KEY_ID + " , " +
+                eventBlock.KEY_eventName + ", " +
+                eventBlock.KEY_eventDate + ", " +
+                eventBlock.KEY_address + ", " +
+                eventBlock.KEY_USER + " FROM "
+                + eventBlock.TABLE
+                + " WHERE "
+                + eventBlock.KEY_USER + " = " + "\"" + username + "\"";
+        Cursor cursor = db.rawQuery(query, null);
+
+        eventBlock event = null;
+        if(cursor.moveToFirst())
+        {
+            do {
+                event = new eventBlock(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
+                event.setEventID(Integer.parseInt(cursor.getString(0)));
+
+                eventList.add(event);
+            } while (cursor.moveToNext());
+        }
+
+        //Sorts the list by dates
+        Collections.sort(eventList);
+
+        return eventList;
+    }
+
     public eventBlock getEventById(int id) throws ParseException {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery = "SELECT " +

@@ -9,7 +9,6 @@
     android:background="@color/caldroid_white"
     tools:context="com.example.elbertkcheng.pettracker_new.CalendarHomePage">
 
-
     <LinearLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
@@ -45,12 +44,20 @@
             android:layout_height="1dp"
             android:background="@android:color/darker_gray" />
 
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swiperefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
         <ListView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
             android:layout_height="184dp"
             android:layout_weight="1"
             android:scrollbars="vertical" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 
     </LinearLayout>

@@ -1,19 +1,25 @@
 package com.example.elbertkcheng.pettracker_new;
 
+import android.app.Application;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.roomorama.caldroid.CaldroidFragment;
 
@@ -27,6 +33,11 @@ import java.util.Calendar;
 
 public class CalendarHomePage extends AppCompatActivity {
     private EventRepo dataRepo;
+    private String user;
+    public ListAdapter mAdapter;
+    public myAdapter adapter;
+    public ListView mListView;
+    public SwipeRefreshLayout srl;
 
     //Calendar
     private CaldroidFragment caldroidFragment;
@@ -59,10 +70,10 @@ public class CalendarHomePage extends AppCompatActivity {
 
     private void initializeSampleData(EventRepo db) throws ParseException {
 
-        db.insert(new eventBlock( "Grooming", "03/03/2018", "1122 228th Avenue SE Sammamish, WA 98075", "exampleuser"));
-        db.insert(new eventBlock( "Vet", "01/01/2018", "1122 228th Avenue SE Sammamish, WA 98075", "exampleuser"));
-        db.insert(new eventBlock("Playdate", "05/08/2018", "1122 228th Avenue SE Sammamish, WA 98075", "exampleuser"));
-        db.insert(new eventBlock( "Playdate", "06/9/2018", "1122 228th Avenue SE Sammamish, WA 98075", "exampleuser"));
+        db.insert(new eventBlock( "Grooming", "03/03/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser()));
+        db.insert(new eventBlock( "Vet", "01/01/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser()));
+        db.insert(new eventBlock("Playdate", "05/08/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser()));
+        db.insert(new eventBlock( "Playdate", "06/9/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser()));
     }
 
     private void createCalendar()
@@ -93,18 +104,45 @@ public class CalendarHomePage extends AppCompatActivity {
         return false;
     }
 
-    public ArrayList<eventBlock> getSpecificList(ArrayList<eventBlock> events, String user)
-    {
-        ArrayList<eventBlock> newList = new ArrayList<>();
+    public String getUser() {
+        return user;
+    }
 
-        for (int i = 0; i < events.size(); i++)
-        {
-            if (events.get(i).getEventUser().equals(user))
-            {
-                newList.add(events.get(i));
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    private void refreshListView(ListView l)
+    {
+        l.removeAllViewsInLayout();
+
+        //Delays until data is done
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+                    Log.i("New Data", dataRepo.getUserEventList(getUser()).toString());
+                    adapter = new myAdapter(getApplicationContext(), dataRepo.getUserEventList(getUser()));
+                    adapter.notifyDataSetChanged();
+                    mListView.setAdapter(adapter);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                srl.setRefreshing(false);
+
+                Toast.makeText(getApplicationContext(), "Refreshed List!", Toast.LENGTH_SHORT);
             }
-        }
-        return newList;
+        }, 1000);
+    }
+
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        refreshListView(this.mListView);
     }
 
     @Override
@@ -112,12 +150,10 @@ public class CalendarHomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_home_page);
 
-        //Create Caldroid calendar
-        createCalendar();
         this.deleteDatabase(DATABASE_NAME);
 
+        setUser((String) getIntent().getSerializableExtra("user"));
         //Custom Dates
-
         try {
             if (!databaseCheck(DATABASE_NAME))
             {
@@ -133,40 +169,56 @@ public class CalendarHomePage extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        //Create Caldroid calendar
+        createCalendar();
         caldroidFragment.refreshView();
-        //ListView
 
-        ListAdapter mAdapter = null;
+
+        //ListView
         try {
-            mAdapter = new myAdapter(this, getSpecificList(dataRepo.getEventList(), "exampleuser"));
+            adapter = new myAdapter(getApplicationContext(), dataRepo.getUserEventList(getUser()));
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        ListView mListView = findViewById(R.id.list_view);
+        mListView = findViewById(R.id.list_view);
 
         //Makes the button clickable
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> av, View v, int position, long id) {
-                Log.i("ListViewClicked", "Clicked item " + id + " at " + position);
-                eventBlock grabbedEvent = null;
+                ArrayList<eventBlock> eventList = new ArrayList<>();
 
                 try {
-                    grabbedEvent = dataRepo.getEventById(position + 1);
+                    eventList = dataRepo.getUserEventList(getUser());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 Intent intent = new Intent(getApplicationContext(), eventDetails.class);
-                intent.setClass(getApplicationContext(), eventDetails.class);
                 intent.putExtra("position", position);
                 intent.putExtra("id", id);
-                intent.putExtra("object", grabbedEvent);
+                intent.putExtra("object", eventList);
                 startActivity(intent);
             }
         });
 
-        mListView.setAdapter(mAdapter);
+
+        mListView.setAdapter(adapter);
+
+        srl = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                Log.i("REFRESH", "REFRESHINTERACTED");
+                if (mListView != null)
+                {
+                    refreshListView(mListView);
+                }
+            }
+        });
 
         //Navigation Menu
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -182,11 +234,15 @@ public class CalendarHomePage extends AppCompatActivity {
                         switch (item.getItemId())
                         {
                             case R.id.nav_add_event:
-                                startActivity(new Intent(CalendarHomePage.this, AddEvent.class));
+                                Intent intent = new Intent(getApplicationContext(), AddEvent.class);
+                                intent.putExtra("user", getUser());
+                                startActivity(intent);
+
                                 Log.v("add event", "event added");
                                 return true;
                             case R.id.nav_settings:
-
+                                getApplicationContext().deleteDatabase(DATABASE_NAME);
+                                adapter.notifyDataSetChanged();
                                 return true;
                             case R.id.nav_logout:
 
