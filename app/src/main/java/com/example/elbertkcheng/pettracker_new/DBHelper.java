@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
     //Version number to upgrade database version - Note: each time you Add, Edit table, you need to change the number.
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 6;
 
 
     public DBHelper(Context context, String database)
@@ -21,11 +21,13 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //Creates table
-        String CREATE_TABLE_STUDENT = "CREATE TABLE " + eventBlock.TABLE + "("
+        String CREATE_TABLE = "CREATE TABLE " + eventBlock.TABLE + "("
                 + eventBlock.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
                 + eventBlock.KEY_eventName + " TEXT,"
-                + eventBlock.KEY_eventDate + " DATE )";
-        db.execSQL(CREATE_TABLE_STUDENT);
+                + eventBlock.KEY_eventDate + " DATE,"
+                + eventBlock.KEY_address + " TEXT,"
+                + eventBlock.KEY_USER + " TEXT )";
+        db.execSQL(CREATE_TABLE);
     }
 
     @Override

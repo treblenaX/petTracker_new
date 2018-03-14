@@ -3,34 +3,26 @@ package com.example.elbertkcheng.pettracker_new;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.roomorama.caldroid.CaldroidFragment;
 
 import java.io.File;
-import java.sql.Connection;
 
-
-import java.sql.PreparedStatement;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 
-import hirondelle.date4j.DateTime;
 
 
 public class CalendarHomePage extends AppCompatActivity {
@@ -65,13 +57,12 @@ public class CalendarHomePage extends AppCompatActivity {
         return true;
     }
 
-    private EventRepo initializeSampleData(EventRepo db) throws ParseException {
+    private void initializeSampleData(EventRepo db) throws ParseException {
 
-        db.insert(new eventBlock("Grooming", "03/03/2018"));
-        db.insert(new eventBlock("Vet", "01/01/2018"));
-        db.insert(new eventBlock("Playdate", "05/08/2018"));
-        db.insert(new eventBlock("Playdate", "06/9/2018"));
-        return db;
+        db.insert(new eventBlock( "Grooming", "03/03/2018", "1122 228th Avenue SE Sammamish, WA 98075", "exampleuser"));
+        db.insert(new eventBlock( "Vet", "01/01/2018", "1122 228th Avenue SE Sammamish, WA 98075", "exampleuser"));
+        db.insert(new eventBlock("Playdate", "05/08/2018", "1122 228th Avenue SE Sammamish, WA 98075", "exampleuser"));
+        db.insert(new eventBlock( "Playdate", "06/9/2018", "1122 228th Avenue SE Sammamish, WA 98075", "exampleuser"));
     }
 
     private void createCalendar()
@@ -102,6 +93,20 @@ public class CalendarHomePage extends AppCompatActivity {
         return false;
     }
 
+    public ArrayList<eventBlock> getSpecificList(ArrayList<eventBlock> events, String user)
+    {
+        ArrayList<eventBlock> newList = new ArrayList<>();
+
+        for (int i = 0; i < events.size(); i++)
+        {
+            if (events.get(i).getEventUser().equals(user))
+            {
+                newList.add(events.get(i));
+            }
+        }
+        return newList;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +114,7 @@ public class CalendarHomePage extends AppCompatActivity {
 
         //Create Caldroid calendar
         createCalendar();
+        this.deleteDatabase(DATABASE_NAME);
 
         //Custom Dates
 
@@ -132,11 +138,34 @@ public class CalendarHomePage extends AppCompatActivity {
 
         ListAdapter mAdapter = null;
         try {
-            mAdapter = new myAdapter(this, dataRepo.getEventList());
+            mAdapter = new myAdapter(this, getSpecificList(dataRepo.getEventList(), "exampleuser"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         ListView mListView = findViewById(R.id.list_view);
+
+        //Makes the button clickable
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> av, View v, int position, long id) {
+                Log.i("ListViewClicked", "Clicked item " + id + " at " + position);
+                eventBlock grabbedEvent = null;
+
+                try {
+                    grabbedEvent = dataRepo.getEventById(position + 1);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(getApplicationContext(), eventDetails.class);
+                intent.setClass(getApplicationContext(), eventDetails.class);
+                intent.putExtra("position", position);
+                intent.putExtra("id", id);
+                intent.putExtra("object", grabbedEvent);
+                startActivity(intent);
+            }
+        });
+
         mListView.setAdapter(mAdapter);
 
         //Navigation Menu

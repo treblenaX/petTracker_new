@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -105,14 +106,16 @@ public class SignUp extends AppCompatActivity {
                     public void onClick(View view)
                     {
                         try {
-                            addJSONObject(username.getText().toString(), password.getText().toString());
-                            startActivity(new Intent(SignUp.this, LogIn.class));
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
+                            if (password.getText().toString().equals(passwordRetry.getText().toString()))
+                            {
+                                addJSONObject(username.getText().toString(), password.getText().toString());
+                                startActivity(new Intent(SignUp.this, LogIn.class));
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Please retype passwords, they don't match!", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 

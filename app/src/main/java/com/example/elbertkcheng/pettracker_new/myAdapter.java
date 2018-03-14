@@ -2,15 +2,16 @@ package com.example.elbertkcheng.pettracker_new;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 /**
  * Created by elber on 3/1/2018.
@@ -34,28 +35,14 @@ class myAdapter extends ArrayAdapter<eventBlock> {
         LayoutInflater listViewInflater = LayoutInflater.from(getContext());
         View mView = listViewInflater.inflate(R.layout.custom_row_view, parent, false);
 
-        String singleItemLocation = example.get(position).toString();
+        eventBlock item = example.get(position);
         TextView tvEventName = (TextView) mView.findViewById(R.id.eventName);
         TextView tvEventDate = (TextView) mView.findViewById(R.id.eventDate);
 
-        Scanner scan = new Scanner(singleItemLocation);
-        String grayText = "";
+        tvEventName.setText(item.getEventName());
 
-        tvEventName.setText(scan.next());
-
-        while (scan.hasNext())
-        {
-            grayText += scan.next() + " ";
-        }
-
-        System.out.print(grayText);
-        tvEventDate.setText(grayText);
+        tvEventDate.setText(item.getFormattedDate());
 
         return mView;
     }
-
-
-
-
-
 }
