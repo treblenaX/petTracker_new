@@ -34,6 +34,8 @@ public class EventRepo {
         values.put(eventBlock.KEY_eventDate, event.getEventDate());
         values.put(eventBlock.KEY_address, event.getAddress());
         values.put(eventBlock.KEY_USER, event.getEventUser());
+        values.put(eventBlock.KEY_eventStartTime, event.getStarttime());
+        values.put(eventBlock.KEY_eventEndTime, event.getEndtime());
 
         //Inserts Row
         long event_id = db.insert(eventBlock.TABLE, null, values);
@@ -57,6 +59,8 @@ public class EventRepo {
         values.put(eventBlock.KEY_eventDate, event.getEventDate());
         values.put(eventBlock.KEY_address, event.getAddress());
         values.put(eventBlock.KEY_USER, event.getEventUser());
+        values.put(eventBlock.KEY_eventStartTime, event.getStarttime());
+        values.put(eventBlock.KEY_eventEndTime, event.getEndtime());
 
         db.update(eventBlock.TABLE, values, eventBlock.KEY_ID + "= ?", new String[] {String.valueOf(event.getEventID())});
         db.close(); //Close db connection
@@ -73,7 +77,7 @@ public class EventRepo {
         if(cursor.moveToFirst())
         {
             do {
-                event = new eventBlock(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
+                event = new eventBlock(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6));
                 event.setEventID(Integer.parseInt(cursor.getString(0)));
 
                 eventList.add(event);
@@ -94,7 +98,9 @@ public class EventRepo {
                 eventBlock.KEY_eventName + ", " +
                 eventBlock.KEY_eventDate + ", " +
                 eventBlock.KEY_address + ", " +
-                eventBlock.KEY_USER + " FROM "
+                eventBlock.KEY_USER + ", " +
+                eventBlock.KEY_eventStartTime + ", " +
+                eventBlock.KEY_eventEndTime + " FROM "
                 + eventBlock.TABLE
                 + " WHERE "
                 + eventBlock.KEY_USER + " = " + "\"" + username + "\"";
@@ -104,7 +110,7 @@ public class EventRepo {
         if(cursor.moveToFirst())
         {
             do {
-                event = new eventBlock(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
+                event = new eventBlock(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6));
                 event.setEventID(Integer.parseInt(cursor.getString(0)));
 
                 eventList.add(event);
@@ -124,7 +130,9 @@ public class EventRepo {
                 eventBlock.KEY_eventName + ", " +
                 eventBlock.KEY_eventDate + ", " +
                 eventBlock.KEY_address + ", " +
-                eventBlock.KEY_USER +
+                eventBlock.KEY_USER + ", " +
+                eventBlock.KEY_eventStartTime + ", " +
+                eventBlock.KEY_eventEndTime +
                 " FROM " + eventBlock.TABLE
                 + " WHERE " +
                 eventBlock.KEY_ID + "= ?";
@@ -141,6 +149,8 @@ public class EventRepo {
                 event.setEventDate(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_eventDate)));
                 event.setAddress(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_address)));
                 event.setEventUser(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_USER)));
+                event.setStarttime(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_eventStartTime)));
+                event.setEndtime(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_eventEndTime)));
             } while (cursor.moveToNext());
         }
 

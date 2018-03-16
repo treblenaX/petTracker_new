@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
     //Version number to upgrade database version - Note: each time you Add, Edit table, you need to change the number.
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
 
     public DBHelper(Context context, String database)
@@ -26,7 +26,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 + eventBlock.KEY_eventName + " TEXT,"
                 + eventBlock.KEY_eventDate + " DATE,"
                 + eventBlock.KEY_address + " TEXT,"
-                + eventBlock.KEY_USER + " TEXT )";
+                + eventBlock.KEY_USER + " TEXT, "
+                + eventBlock.KEY_eventStartTime + " TIME,"
+                + eventBlock.KEY_eventEndTime + " TIME )";
         db.execSQL(CREATE_TABLE);
     }
 

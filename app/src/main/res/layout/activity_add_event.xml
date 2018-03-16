@@ -27,10 +27,37 @@
             android:id="@+id/MonthDropDown"
             android:layout_width="70dp"
             android:layout_height="55dp"
-            android:layout_marginTop="136dp"
-            android:background="@color/caldroid_lighter_gray"
+            android:layout_marginTop="132dp"
             android:minWidth="150dp"
             app:layout_constraintHorizontal_bias="0.053"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
+
+        <Spinner
+            android:id="@+id/startTime"
+            android:layout_width="125dp"
+            android:layout_height="55dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="268dp"
+            android:minWidth="150dp"
+            app:layout_constraintEnd_toStartOf="@+id/endTime"
+            app:layout_constraintHorizontal_bias="0.111"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
+
+        <Spinner
+            android:id="@+id/endTime"
+            android:layout_width="125dp"
+            android:layout_height="55dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="268dp"
+            android:minWidth="150dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.97"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addEventName" />
@@ -39,10 +66,9 @@
             android:id="@+id/DayDropDown"
             android:layout_width="70dp"
             android:layout_height="55dp"
-            android:layout_marginTop="136dp"
-            android:background="@color/caldroid_lighter_gray"
+            android:layout_marginTop="132dp"
             android:minWidth="150dp"
-            app:layout_constraintHorizontal_bias="0.402"
+            app:layout_constraintHorizontal_bias="0.419"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addEventName" />
@@ -51,36 +77,10 @@
             android:id="@+id/YearDropDown"
             android:layout_width="117dp"
             android:layout_height="55dp"
-            android:layout_marginTop="136dp"
-            android:background="@color/caldroid_lighter_gray"
+            android:layout_marginTop="132dp"
             android:minWidth="150dp"
-            app:layout_constraintHorizontal_bias="0.888"
+            app:layout_constraintHorizontal_bias="0.936"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
-
-        <Spinner
-            android:id="@+id/StartTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="268dp"
-            android:background="@color/caldroid_lighter_gray"
-            android:entries="@android:drawable/ic_menu_my_calendar"
-            android:minWidth="150dp"
-            app:layout_constraintHorizontal_bias="0.134"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
-
-        <Spinner
-            android:id="@+id/EndTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="28dp"
-            android:layout_marginTop="268dp"
-            android:background="@color/caldroid_lighter_gray"
-            android:entries="@android:drawable/ic_menu_my_calendar"
-            android:minWidth="150dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addEventName" />
 
@@ -101,12 +101,53 @@
             android:id="@+id/AddEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="56dp"
+            android:layout_marginBottom="40dp"
             android:text="Add Event"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/DateStaticTextLabel"
+            android:layout_width="77dp"
+            android:layout_height="32dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Date:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            app:layout_constraintBottom_toTopOf="@+id/MonthDropDown"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventAddress" />
+
+        <TextView
+            android:id="@+id/HYPHEN"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginBottom="48dp"
+            android:text="to"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            app:layout_constraintBottom_toTopOf="@+id/AddEvent"
+            app:layout_constraintEnd_toStartOf="@+id/endTime"
+            app:layout_constraintHorizontal_bias="0.459"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/startTime" />
+
+        <TextView
+            android:id="@+id/setTimeStaticTextLabel2"
+            android:layout_width="140dp"
+            android:layout_height="32dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Set Time:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            app:layout_constraintBottom_toTopOf="@+id/startTime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/MonthDropDown"
+            app:layout_constraintVertical_bias="0.88" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

@@ -12,13 +12,15 @@ import java.util.Date;
  */
 
 public class eventBlock implements Comparable<eventBlock>, Serializable {
-    private static final String eventDatePatternInput = "MM/dd/yyyy";
-    private static final String eventDatePatternOutput = "EEE, d MMM 'at' hh:mm aa";
+    private static final String eventDatePatternInput = "MM/dd/yyyy HH:mm aa 'until' HH:mm aa";
+    private static final String eventDatePatternOutput = "MMMM d, EEE";
     private int eventID;
     private String eventUser;
     private String eventName;
     private String eventDate;
     private String address;
+    private String starttime;
+    private String endtime;
     private Date eventDateObject;
 
     //Labels table name
@@ -29,23 +31,29 @@ public class eventBlock implements Comparable<eventBlock>, Serializable {
     public static final String KEY_ID = "id";
     public static final String KEY_eventName = "name";
     public static final String KEY_eventDate = "date";
+    public static final String KEY_eventStartTime = "starttime";
+    public static final String KEY_eventEndTime = "endtime";
     public static final String KEY_address = "address";
 
     public eventBlock() throws ParseException {
     }
 
-    public eventBlock(String eventName, String eventDate, String address, String user) throws ParseException {
+    public eventBlock(String eventName, String eventDate, String address, String user, String starttime, String endtime) throws ParseException {
         this.eventName = eventName;
         this.eventDate = eventDate;
         this.address = address;
         this.eventUser = user;
+        this.starttime = starttime;
+        this.endtime = endtime;
 
         if (this.eventDateObject == null)
         {
             SimpleDateFormat sdf = new SimpleDateFormat(eventDatePatternInput);
-            this.eventDateObject = sdf.parse(eventDate);
-            Log.i("Date", this.eventDateObject.toString());
+            this.eventDateObject = sdf.parse(eventDate + " " + getStarttime() + " until " + getEndtime());
+            Log.i("Date", this.toString());
         }
+
+
     }
 
 
@@ -77,7 +85,7 @@ public class eventBlock implements Comparable<eventBlock>, Serializable {
     {
         SimpleDateFormat sdf = new SimpleDateFormat(eventDatePatternOutput);
 
-        return getEventName() + " " + sdf.format(this.eventDateObject);
+        return sdf.format(this.eventDateObject) + " at " + getStarttime() + " until " + getEndtime();
     }
 
     public int getEventID() {
@@ -116,5 +124,21 @@ public class eventBlock implements Comparable<eventBlock>, Serializable {
 
     public void setEventUser(String eventUser) {
         this.eventUser = eventUser;
+    }
+
+    public String getStarttime() {
+        return starttime;
+    }
+
+    public void setStarttime(String starttime) {
+        this.starttime = starttime;
+    }
+
+    public String getEndtime() {
+        return endtime;
+    }
+
+    public void setEndtime(String endtime) {
+        this.endtime = endtime;
     }
 }

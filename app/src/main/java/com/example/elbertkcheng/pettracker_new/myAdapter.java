@@ -41,7 +41,7 @@ class myAdapter extends ArrayAdapter<eventBlock> {
 
         tvEventName.setText(item.getEventName());
 
-        tvEventDate.setText(item.getFormattedDate());
+        tvEventDate.setText(item.toString());
 
         return mView;
     }

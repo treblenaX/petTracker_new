@@ -18,9 +18,13 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
     private static final String DATABASE_NAME = "events.db";
     private EditText addEventName;
     private EditText addEventAddress;
+    private Spinner addEventStartTime;
+    private Spinner addEventEndTime;
     private String username;
     private String eventName;
     private String eventAddress;
+    private String startTime;
+    private String endTime;
     private int months;
     private int days;
     private int years;
@@ -28,7 +32,7 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
 
     public void addIntoDatabase(EventRepo repo) throws ParseException {
         Log.i("Check", getEventName().toString() + getEventAddress().toString() + getMonths() + getDays() + getYears() + getUsername());
-        repo.insert(new eventBlock(getEventName().toString(), getMonths() + "/" + getDays() + "/" + getYears(), getEventAddress().toString(), getUsername()));
+        repo.insert(new eventBlock(getEventName().toString(), getMonths() + "/" + getDays() + "/" + getYears(), getEventAddress().toString(), getUsername(), getStartTime(), getEndTime()));
     }
 
     @Override
@@ -41,6 +45,8 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
 
         addEventName = (EditText) findViewById(R.id.addEventName);
         addEventAddress = (EditText) findViewById(R.id.addEventAddress);
+        addEventStartTime = (Spinner) findViewById(R.id.startTime);
+        addEventEndTime = (Spinner) findViewById(R.id.endTime);
         Spinner monthSpinner = (Spinner) findViewById(R.id.MonthDropDown);
         Spinner daysSpinner = (Spinner) findViewById(R.id.DayDropDown);
         Spinner yearsSpinner = (Spinner) findViewById(R.id.YearDropDown);
@@ -68,14 +74,21 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
         ArrayAdapter<CharSequence> mAdapter = ArrayAdapter.createFromResource(this, R.array.months, android.R.layout.simple_spinner_dropdown_item);
         ArrayAdapter<CharSequence> dAdapter = ArrayAdapter.createFromResource(this, R.array.days, android.R.layout.simple_spinner_dropdown_item);
         ArrayAdapter<CharSequence> yAdapter = ArrayAdapter.createFromResource(this, R.array.years, android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> stAdapter = ArrayAdapter.createFromResource(this, R.array.times, android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> etAdapter = ArrayAdapter.createFromResource(this, R.array.times, android.R.layout.simple_spinner_dropdown_item);
+
 
         monthSpinner.setAdapter(mAdapter);
         daysSpinner.setAdapter(dAdapter);
         yearsSpinner.setAdapter(yAdapter);
+        addEventStartTime.setAdapter(stAdapter);
+        addEventEndTime.setAdapter(etAdapter);
 
         monthSpinner.setOnItemSelectedListener(this);
         daysSpinner.setOnItemSelectedListener(this);
         yearsSpinner.setOnItemSelectedListener(this);
+        addEventStartTime.setOnItemSelectedListener(this);
+        addEventEndTime.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -92,6 +105,15 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
         {
             setYears(Integer.parseInt((String)adapterView.getItemAtPosition(i)));
         }
+        if (adapterView.getId() == R.id.startTime)
+        {
+            setStartTime((String)adapterView.getItemAtPosition(i));
+        }
+        if (adapterView.getId() == R.id.endTime)
+        {
+            setEndTime((String)adapterView.getItemAtPosition(i));
+        }
+
     }
 
     @Override
@@ -153,5 +175,21 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

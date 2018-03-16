@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,8 +24,12 @@ import android.widget.Toast;
 
 import com.roomorama.caldroid.CaldroidFragment;
 
+import java.io.BufferedReader;
 import java.io.File;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +37,7 @@ import java.util.Calendar;
 
 
 public class CalendarHomePage extends AppCompatActivity {
+    private DrawerLayout mDrawer;
     private EventRepo dataRepo;
     private String user;
     public ListAdapter mAdapter;
@@ -60,7 +66,28 @@ public class CalendarHomePage extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        caldroidFragment.refreshView();
     }
+
+    private void clearCalendar(ArrayList<eventBlock> eventList)
+    {
+        if (caldroidFragment != null)
+        {
+            ColorDrawable green = new ColorDrawable(Color.GREEN);
+
+            try {
+                for (int i = 0; i < dataRepo.getEventList().size(); i++)
+                {
+                    caldroidFragment.clearBackgroundDrawableForDate(eventList.get(i).getEventDateTime());
+                }
+            } catch (ParseException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        caldroidFragment.refreshView();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -70,10 +97,10 @@ public class CalendarHomePage extends AppCompatActivity {
 
     private void initializeSampleData(EventRepo db) throws ParseException {
 
-        db.insert(new eventBlock( "Grooming", "03/03/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser()));
-        db.insert(new eventBlock( "Vet", "01/01/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser()));
-        db.insert(new eventBlock("Playdate", "05/08/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser()));
-        db.insert(new eventBlock( "Playdate", "06/9/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser()));
+        db.insert(new eventBlock( "SAMPLE:Grooming", "03/03/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
+        db.insert(new eventBlock( "SAMPLE:Vet", "01/01/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
+        db.insert(new eventBlock("SAMPLE:Playdate", "05/08/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
+        db.insert(new eventBlock( "SAMPLE:Playdate", "06/9/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
     }
 
     private void createCalendar()
@@ -92,24 +119,33 @@ public class CalendarHomePage extends AppCompatActivity {
         t.commit();
     }
 
-    private boolean databaseCheck(String fileName)
-    {
-        File dataFile = getApplicationContext().getDatabasePath(fileName);
+    private boolean databaseCheck(String fileName) throws IOException, ParseException {
+        //Variable that finds the file specified in parameters
+        File databaseFile = getApplicationContext().getDatabasePath(fileName);
+
+        //Uses File.io to find the Database for checking
+        File dataFile = databaseFile;
+
+        //Checks if the file is empty
         if (dataFile.exists())
         {
-            Log.i("Database", "Database exists!");
-            return true;
+            EventRepo dataCheck = new EventRepo(this, DATABASE_NAME);
+
+            //Grabs the ArrayList of eventBlock specific to the user logged in and check if it is empty or not.
+            if (dataCheck.getUserEventList(getUser()).isEmpty())
+            {
+                return false;
+            }
+            else
+            {
+                Log.i("Database", "Database EXISTS!");
+                return true;
+            }
         }
+
+        //Else, return false to create the sample database.
         Log.i("Database", "Database DOESN'T exist!");
         return false;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
     }
 
     private void refreshListView(ListView l)
@@ -127,16 +163,23 @@ public class CalendarHomePage extends AppCompatActivity {
                     adapter = new myAdapter(getApplicationContext(), dataRepo.getUserEventList(getUser()));
                     adapter.notifyDataSetChanged();
                     mListView.setAdapter(adapter);
+                    setCustomResource(dataRepo.getEventList());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 srl.setRefreshing(false);
-
-                Toast.makeText(getApplicationContext(), "Refreshed List!", Toast.LENGTH_SHORT);
             }
-        }, 1000);
+        }, 500);
+        Toast.makeText(getApplicationContext(), "Refreshed List!", Toast.LENGTH_SHORT);
     }
 
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     @Override
     protected void onResume()
@@ -150,8 +193,6 @@ public class CalendarHomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_home_page);
 
-        this.deleteDatabase(DATABASE_NAME);
-
         setUser((String) getIntent().getSerializableExtra("user"));
         //Custom Dates
         try {
@@ -164,8 +205,7 @@ public class CalendarHomePage extends AppCompatActivity {
             {
                 this.dataRepo = new EventRepo(this, DATABASE_NAME);
             }
-            setCustomResource(dataRepo.getEventList());
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -177,6 +217,7 @@ public class CalendarHomePage extends AppCompatActivity {
         //ListView
         try {
             adapter = new myAdapter(getApplicationContext(), dataRepo.getUserEventList(getUser()));
+            setCustomResource(dataRepo.getEventList());
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -216,12 +257,19 @@ public class CalendarHomePage extends AppCompatActivity {
                 if (mListView != null)
                 {
                     refreshListView(mListView);
+                    try {
+                        setCustomResource(dataRepo.getEventList());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
 
         //Navigation Menu
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         navigationView.setNavigationItemSelectedListener(
 
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -236,16 +284,27 @@ public class CalendarHomePage extends AppCompatActivity {
                             case R.id.nav_add_event:
                                 Intent intent = new Intent(getApplicationContext(), AddEvent.class);
                                 intent.putExtra("user", getUser());
+                                mDrawer.closeDrawers();
                                 startActivity(intent);
 
                                 Log.v("add event", "event added");
                                 return true;
                             case R.id.nav_settings:
-                                getApplicationContext().deleteDatabase(DATABASE_NAME);
+                                getApplication().deleteDatabase(DATABASE_NAME);
+
+                                try {
+                                    clearCalendar(dataRepo.getUserEventList(getUser()));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                dataRepo = new EventRepo(getApplicationContext(), DATABASE_NAME);
                                 adapter.notifyDataSetChanged();
+                                refreshListView(mListView);
+                                caldroidFragment.refreshView();
+                                mDrawer.closeDrawers();
                                 return true;
                             case R.id.nav_logout:
-
                                 return true;
 
                             default:
