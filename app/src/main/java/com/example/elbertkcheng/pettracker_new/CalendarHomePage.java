@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -24,12 +25,10 @@ import android.widget.Toast;
 
 import com.roomorama.caldroid.CaldroidFragment;
 
-import java.io.BufferedReader;
 import java.io.File;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,6 +43,7 @@ public class CalendarHomePage extends AppCompatActivity {
     public myAdapter adapter;
     public ListView mListView;
     public SwipeRefreshLayout srl;
+    public ArrayList<eventBlock> eventList;
 
     //Calendar
     private CaldroidFragment caldroidFragment;
@@ -55,15 +55,9 @@ public class CalendarHomePage extends AppCompatActivity {
         if (caldroidFragment != null)
         {
             ColorDrawable green = new ColorDrawable(Color.GREEN);
-
-            try {
-                for (int i = 0; i < dataRepo.getEventList().size(); i++)
-                {
-                    caldroidFragment.setBackgroundDrawableForDate(green, eventList.get(i).getEventDateTime());
-                }
-            } catch (ParseException e)
+            for (int i = 0; i < eventList.size(); i++)
             {
-                e.printStackTrace();
+                caldroidFragment.setBackgroundDrawableForDate(green, eventList.get(i).getEventDateTime());
             }
         }
         caldroidFragment.refreshView();
@@ -74,15 +68,9 @@ public class CalendarHomePage extends AppCompatActivity {
         if (caldroidFragment != null)
         {
             ColorDrawable green = new ColorDrawable(Color.GREEN);
-
-            try {
-                for (int i = 0; i < dataRepo.getEventList().size(); i++)
-                {
-                    caldroidFragment.clearBackgroundDrawableForDate(eventList.get(i).getEventDateTime());
-                }
-            } catch (ParseException e)
+            for (int i = 0; i < eventList.size(); i++)
             {
-                e.printStackTrace();
+                caldroidFragment.clearBackgroundDrawableForDate(eventList.get(i).getEventDateTime());
             }
         }
         caldroidFragment.refreshView();
@@ -96,7 +84,7 @@ public class CalendarHomePage extends AppCompatActivity {
     }
 
     private void initializeSampleData(EventRepo db) throws ParseException {
-
+        //Sample Data that will be included if the database is non-existent or empty.
         db.insert(new eventBlock( "SAMPLE:Grooming", "03/03/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
         db.insert(new eventBlock( "SAMPLE:Vet", "01/01/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
         db.insert(new eventBlock("SAMPLE:Playdate", "05/08/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
@@ -106,6 +94,8 @@ public class CalendarHomePage extends AppCompatActivity {
     private void createCalendar()
     {
         //Caldroid - flexible calendar - https://github.com/roomorama/Caldroid/blob/master/README.md
+
+        //Start building the CaldroidFragment object and putting arguments in.
         this.caldroidFragment = new CaldroidFragment();
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();
@@ -114,6 +104,7 @@ public class CalendarHomePage extends AppCompatActivity {
         args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
         this.caldroidFragment.setArguments(args);
 
+        //Replace the default CalendarView with the CaldroidFragment
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
         t.replace(R.id.calendarView, this.caldroidFragment);
         t.commit();
@@ -152,21 +143,16 @@ public class CalendarHomePage extends AppCompatActivity {
     {
         l.removeAllViewsInLayout();
 
-        //Delays until data is done
+        //Delays until data is done loading.
         new Handler().postDelayed(new Runnable() {
 
             @Override
             public void run() {
-
-                try {
-                    Log.i("New Data", dataRepo.getUserEventList(getUser()).toString());
-                    adapter = new myAdapter(getApplicationContext(), dataRepo.getUserEventList(getUser()));
-                    adapter.notifyDataSetChanged();
-                    mListView.setAdapter(adapter);
-                    setCustomResource(dataRepo.getEventList());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                Log.i("New Data", eventList.toString());
+                adapter = new myAdapter(getApplicationContext(), eventList);
+                adapter.notifyDataSetChanged();
+                mListView.setAdapter(adapter);
+                setCustomResource(eventList);
                 srl.setRefreshing(false);
             }
         }, 500);
@@ -185,7 +171,7 @@ public class CalendarHomePage extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
-        refreshListView(this.mListView);
+        refreshListView(mListView);
     }
 
     @Override
@@ -193,6 +179,7 @@ public class CalendarHomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_home_page);
 
+        getSupportActionBar().setTitle("Pet Tracker");
         setUser((String) getIntent().getSerializableExtra("user"));
         //Custom Dates
         try {
@@ -200,10 +187,12 @@ public class CalendarHomePage extends AppCompatActivity {
             {
                 this.dataRepo = new EventRepo(this, DATABASE_NAME);
                 initializeSampleData(this.dataRepo);
+                this.eventList = dataRepo.getUserEventList(getUser());
             }
             else
             {
                 this.dataRepo = new EventRepo(this, DATABASE_NAME);
+                eventList = dataRepo.getUserEventList(getUser());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -215,13 +204,8 @@ public class CalendarHomePage extends AppCompatActivity {
 
 
         //ListView
-        try {
-            adapter = new myAdapter(getApplicationContext(), dataRepo.getUserEventList(getUser()));
-            setCustomResource(dataRepo.getEventList());
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        adapter = new myAdapter(getApplicationContext(), eventList);
+        setCustomResource(eventList);
 
         mListView = findViewById(R.id.list_view);
 
@@ -229,13 +213,6 @@ public class CalendarHomePage extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> av, View v, int position, long id) {
-                ArrayList<eventBlock> eventList = new ArrayList<>();
-
-                try {
-                    eventList = dataRepo.getUserEventList(getUser());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
                 Intent intent = new Intent(getApplicationContext(), eventDetails.class);
                 intent.putExtra("position", position);
                 intent.putExtra("id", id);
@@ -292,11 +269,7 @@ public class CalendarHomePage extends AppCompatActivity {
                             case R.id.nav_settings:
                                 getApplication().deleteDatabase(DATABASE_NAME);
 
-                                try {
-                                    clearCalendar(dataRepo.getUserEventList(getUser()));
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
+                                clearCalendar(eventList);
 
                                 dataRepo = new EventRepo(getApplicationContext(), DATABASE_NAME);
                                 adapter.notifyDataSetChanged();
@@ -317,3 +290,5 @@ public class CalendarHomePage extends AppCompatActivity {
 
     }
 }
+
+

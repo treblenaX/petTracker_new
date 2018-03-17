@@ -163,6 +163,7 @@ public class LogIn extends AppCompatActivity {
                         intent.setClass(getApplicationContext(), CalendarHomePage.class);
                         intent.putExtra("user", user);
                         startActivity(intent);
+                        finish();
 
                     }
                     else

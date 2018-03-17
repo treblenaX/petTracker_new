@@ -106,11 +106,10 @@ public class EventRepo {
                 + eventBlock.KEY_USER + " = " + "\"" + username + "\"";
         Cursor cursor = db.rawQuery(query, null);
 
-        eventBlock event = null;
         if(cursor.moveToFirst())
         {
             do {
-                event = new eventBlock(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6));
+                eventBlock event = new eventBlock(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6));
                 event.setEventID(Integer.parseInt(cursor.getString(0)));
 
                 eventList.add(event);

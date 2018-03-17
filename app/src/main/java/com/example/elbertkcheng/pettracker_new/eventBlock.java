@@ -50,7 +50,6 @@ public class eventBlock implements Comparable<eventBlock>, Serializable {
         {
             SimpleDateFormat sdf = new SimpleDateFormat(eventDatePatternInput);
             this.eventDateObject = sdf.parse(eventDate + " " + getStarttime() + " until " + getEndtime());
-            Log.i("Date", this.toString());
         }
 
 

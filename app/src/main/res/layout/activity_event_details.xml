@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.elbertkcheng.pettracker_new.eventDetails">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/displayEventName"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="EventName"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/displayEventTime"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="53dp"
+            android:gravity="center"
+            android:text="EventTime"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/editEventButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/openInMap"
+            android:layout_alignBottom="@+id/openInMap"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="53dp"
+            android:text="Edit Event"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <Button
+            android:id="@+id/openInMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="48dp"
+            android:layout_marginEnd="42dp"
+            android:text="Open in Maps"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,10 +1,8 @@
 package com.example.elbertkcheng.pettracker_new;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,8 +11,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 
-public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String DATABASE_NAME = "events.db";
     private EditText addEventName;
     private EditText addEventAddress;
@@ -29,25 +28,25 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
     private int days;
     private int years;
     private EventRepo dataRepo = new EventRepo(this, DATABASE_NAME);
+    private eventBlock existing;
 
-    public void addIntoDatabase(EventRepo repo) throws ParseException {
-        Log.i("Check", getEventName().toString() + getEventAddress().toString() + getMonths() + getDays() + getYears() + getUsername());
-        repo.insert(new eventBlock(getEventName().toString(), getMonths() + "/" + getDays() + "/" + getYears(), getEventAddress().toString(), getUsername(), getStartTime(), getEndTime()));
+    public void updateDatabase(EventRepo repo) throws ParseException {
+        Log.i("Check", getEventName().toString() + getEventAddress().toString() + getMonths() + getDays() + getYears() + existing.getEventUser());
+        existing.setEventDate(getMonths() + "/" + getDays() + "/" + getYears());
+        existing.setEventName(getEventName());
+        existing.setAddress(getEventAddress());
+        existing.setStarttime(getStartTime());
+        existing.setEndtime(getEndTime());
+        repo.update(getExisting());
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_event);
+        setContentView(R.layout.activity_edit_event);
 
-        getSupportActionBar().setTitle("Add Event");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        setUsername((String) getIntent().getSerializableExtra("user"));
-        Log.i("USER IS", getUsername());
-
-        Intent intent = new Intent(getApplicationContext(), eventDetails.class);
-        intent.putExtra("user", getUsername());
+        //Brings the selected eventBlock over
+        setExisting((eventBlock)getIntent().getSerializableExtra("object"));
 
         addEventName = (EditText) findViewById(R.id.addEventName);
         addEventAddress = (EditText) findViewById(R.id.addEventAddress);
@@ -56,9 +55,12 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
         Spinner monthSpinner = (Spinner) findViewById(R.id.MonthDropDown);
         Spinner daysSpinner = (Spinner) findViewById(R.id.DayDropDown);
         Spinner yearsSpinner = (Spinner) findViewById(R.id.YearDropDown);
-        Button addEvent = (Button) findViewById(R.id.updateEvent);
+        Button updateEvent = (Button) findViewById(R.id.updateEvent);
+        Button deleteEvent = (Button) findViewById(R.id.deleteEvent);
 
-        addEvent.setOnClickListener((new View.OnClickListener()
+        addEventName.setText(getExisting().getEventName());
+        addEventAddress.setText(getExisting().getAddress());
+        updateEvent.setOnClickListener((new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -67,12 +69,20 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
                 setEventAddress(addEventAddress.getText().toString());
 
                 try {
-                    addIntoDatabase(getDataRepo());
+                    updateDatabase(getDataRepo());
+                    finish();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                ;
+            }
+        }));
 
-
+        deleteEvent.setOnClickListener((new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                dataRepo.delete(existing.getEventID());
                 finish();
             }
         }));
@@ -87,8 +97,23 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
         monthSpinner.setAdapter(mAdapter);
         daysSpinner.setAdapter(dAdapter);
         yearsSpinner.setAdapter(yAdapter);
+
+        String existingST = getExisting().getStarttime();
+        String existingET = getExisting().getEndtime();
+
         addEventStartTime.setAdapter(stAdapter);
+        if (existingST != null)
+        {
+            int spinnerPosition = stAdapter.getPosition(existingST);
+            addEventStartTime.setSelection(spinnerPosition);
+        }
+
         addEventEndTime.setAdapter(etAdapter);
+        if (existingET != null)
+        {
+            int spinnerPosition = stAdapter.getPosition(existingST);
+            addEventEndTime.setSelection(spinnerPosition);
+        }
 
         monthSpinner.setOnItemSelectedListener(this);
         daysSpinner.setOnItemSelectedListener(this);
@@ -126,19 +151,6 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if (item.getItemId() == android.R.id.home)
-        {
-            Intent intent = new Intent(getApplicationContext(), CalendarHomePage.class);
-            intent.putExtra("user", getUsername());
-            finish();
-            return true;
-        }
-    }
-
 
     public int getMonths() {
         return months;
@@ -210,5 +222,13 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public eventBlock getExisting() {
+        return existing;
+    }
+
+    public void setExisting(eventBlock existing) {
+        this.existing = existing;
     }
 }
