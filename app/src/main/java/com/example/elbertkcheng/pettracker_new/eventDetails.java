@@ -19,8 +19,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -87,7 +85,6 @@ public class eventDetails extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), EditEvent.class);
                 intent.putExtra("object", getGrabbedEvents().get(position));
                 startActivity(intent);
-                finish();
             }
         }));
 

@@ -13,7 +13,8 @@
         <activity
             android:name=".LogIn"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,10 +23,12 @@
         <activity
             android:name=".SignUp"
             android:parentActivityName=".LogIn"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance"/>
         <activity
             android:name=".CalendarHomePage"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance"/>
         <activity
             android:name=".AddEvent"
             android:parentActivityName=".CalendarHomePage"
@@ -33,9 +36,11 @@
         <activity
             android:name=".EditEvent"
             android:parentActivityName=".CalendarHomePage"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance"/>
         <activity android:name=".eventDetails"
-            android:parentActivityName=".CalendarHomePage">
+            android:parentActivityName=".CalendarHomePage"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <data android:scheme="geo" />

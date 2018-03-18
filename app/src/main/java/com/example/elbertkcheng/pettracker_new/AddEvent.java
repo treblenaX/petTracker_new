@@ -137,6 +137,7 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
             finish();
             return true;
         }
+        return false;
     }
 
 

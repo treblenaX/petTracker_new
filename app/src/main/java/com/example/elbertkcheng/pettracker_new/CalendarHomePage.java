@@ -121,9 +121,10 @@ public class CalendarHomePage extends AppCompatActivity {
         if (dataFile.exists())
         {
             EventRepo dataCheck = new EventRepo(this, DATABASE_NAME);
+            dataCheck.setUserEventList(getUser());
 
             //Grabs the ArrayList of eventBlock specific to the user logged in and check if it is empty or not.
-            if (dataCheck.getUserEventList(getUser()).isEmpty())
+            if (dataCheck.getUserEventList().isEmpty())
             {
                 return false;
             }
@@ -139,6 +140,16 @@ public class CalendarHomePage extends AppCompatActivity {
         return false;
     }
 
+    private void updateData()
+    {
+        try {
+            this.dataRepo.setUserEventList(getUser());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        this.eventList = this.dataRepo.getUserEventList();
+    }
+
     private void refreshListView(ListView l)
     {
         l.removeAllViewsInLayout();
@@ -148,6 +159,7 @@ public class CalendarHomePage extends AppCompatActivity {
 
             @Override
             public void run() {
+                updateData();
                 Log.i("New Data", eventList.toString());
                 adapter = new myAdapter(getApplicationContext(), eventList);
                 adapter.notifyDataSetChanged();
@@ -171,7 +183,9 @@ public class CalendarHomePage extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
+        updateData();
         refreshListView(mListView);
+        caldroidFragment.moveToDate(Calendar.getInstance().getTime());
     }
 
     @Override
@@ -187,12 +201,14 @@ public class CalendarHomePage extends AppCompatActivity {
             {
                 this.dataRepo = new EventRepo(this, DATABASE_NAME);
                 initializeSampleData(this.dataRepo);
-                this.eventList = dataRepo.getUserEventList(getUser());
+                dataRepo.setUserEventList(getUser());
+                this.eventList = dataRepo.getUserEventList();
             }
             else
             {
                 this.dataRepo = new EventRepo(this, DATABASE_NAME);
-                eventList = dataRepo.getUserEventList(getUser());
+                dataRepo.setUserEventList(getUser());
+                this.eventList = dataRepo.getUserEventList();
             }
         } catch (Exception e) {
             e.printStackTrace();

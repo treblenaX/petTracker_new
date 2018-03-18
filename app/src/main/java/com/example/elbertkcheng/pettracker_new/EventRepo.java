@@ -18,6 +18,7 @@ import java.util.HashMap;
 
 public class EventRepo {
     private DBHelper dbHelper;
+    private ArrayList<eventBlock> UserEventList;
 
     public EventRepo(Context context, String database)
     {
@@ -90,7 +91,7 @@ public class EventRepo {
         return eventList;
     }
 
-    public ArrayList<eventBlock> getUserEventList(String username) throws ParseException {
+    public void setUserEventList(String username) throws ParseException {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         ArrayList<eventBlock> eventList = new ArrayList<>();
@@ -119,8 +120,9 @@ public class EventRepo {
         //Sorts the list by dates
         Collections.sort(eventList);
 
-        return eventList;
+        this.UserEventList = eventList;
     }
+
 
     public eventBlock getEventById(int id) throws ParseException {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -156,5 +158,9 @@ public class EventRepo {
         cursor.close();
         db.close();
         return event;
+    }
+
+    public ArrayList<eventBlock> getUserEventList() {
+        return this.UserEventList;
     }
 }
