@@ -9,7 +9,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="368dp"
         android:layout_height="495dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -36,28 +36,44 @@
 
         <Spinner
             android:id="@+id/startTime"
-            android:layout_width="136dp"
-            android:layout_height="55dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="130dp"
+            android:layout_height="71dp"
             android:layout_marginTop="268dp"
             android:minWidth="150dp"
-            app:layout_constraintEnd_toStartOf="@+id/endTime"
-            app:layout_constraintHorizontal_bias="0.111"
+            app:layout_constraintHorizontal_bias="0.067"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addEventName" />
 
         <Spinner
             android:id="@+id/endTime"
-            android:layout_width="136dp"
-            android:layout_height="55dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="112dp"
+            android:layout_height="71dp"
             android:layout_marginTop="268dp"
             android:minWidth="150dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.97"
+            app:layout_constraintHorizontal_bias="0.878"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
+
+        <Spinner
+            android:id="@+id/startTimeAMPM"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginTop="340dp"
+            android:minWidth="100dp"
+            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEventName" />
+
+        <Spinner
+            android:id="@+id/endTimeAMPM"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginTop="340dp"
+            android:minWidth="100dp"
+            app:layout_constraintHorizontal_bias="0.884"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addEventName" />
@@ -101,7 +117,7 @@
             android:id="@+id/updateEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="16dp"
             android:text="Add Event"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
@@ -126,28 +142,23 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginBottom="48dp"
+            android:gravity="center_horizontal"
             android:text="to"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             app:layout_constraintBottom_toTopOf="@+id/updateEvent"
-            app:layout_constraintEnd_toStartOf="@+id/endTime"
-            app:layout_constraintHorizontal_bias="0.459"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/startTime" />
+            app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
             android:id="@+id/setTimeStaticTextLabel2"
             android:layout_width="140dp"
             android:layout_height="32dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Set Time:"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            app:layout_constraintBottom_toTopOf="@+id/startTime"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/MonthDropDown"
-            app:layout_constraintVertical_bias="0.88" />
+            app:layout_constraintTop_toBottomOf="@+id/MonthDropDown" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

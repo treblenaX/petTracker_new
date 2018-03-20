@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Calendar;
 
 public class SignUp extends AppCompatActivity {
     private static final String LOGIN_DATABASE = "loginDatabase.json";
@@ -61,12 +62,31 @@ public class SignUp extends AppCompatActivity {
         return str;
     }
 
+    public boolean compareData(String username_input, String password_input) throws JSONException, FileNotFoundException {
+
+        JSONArray arr = new JSONArray(readFromFile());
+
+        for(int i = 0; i < arr.length(); i++)
+        {
+            String dbUsername = arr.getJSONObject(i).getString("username");
+            Log.i("JSON Data", arr.getJSONObject(i).getString("username"));
+            String dbPassword = arr.getJSONObject(i).getString("password");
+            Log.i("JSON Data", arr.getJSONObject(i).getString("password"));
+
+            if(dbUsername.equals(username_input) && dbPassword.equals(password_input))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addJSONObject(String username, String password) throws JSONException, IOException {
         //Transfers the old data into the new data file.
         JSONArray arr = new JSONArray(readFromFile());
         JSONArray newArr = new JSONArray();
 
-        for(int i = 0; i < arr.length(); i+=2)
+        for(int i = 0; i < arr.length(); i++)
         {
             String dbUsername = arr.getJSONObject(i).getString("username");
             String dbPassword = arr.getJSONObject(i).getString("password");
@@ -103,18 +123,37 @@ public class SignUp extends AppCompatActivity {
 
         signupButton.setOnClickListener(new View.OnClickListener()
                 {
+                    @Override
                     public void onClick(View view)
                     {
                         try {
-                            if (password.getText().toString().equals(passwordRetry.getText().toString()))
+                            if (compareData(username.getText().toString(), password.getText().toString()) == false)
                             {
-                                addJSONObject(username.getText().toString(), password.getText().toString());
-                                startActivity(new Intent(SignUp.this, LogIn.class));
+                                if (username.getText().toString().trim().isEmpty()|| password.getText().toString().trim().isEmpty() )
+                                {
+                                    Toast.makeText(getApplicationContext(), "Fields are empty, please enter in them!", Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    if (password.getText().toString().equals(passwordRetry.getText().toString()))
+                                    {
+                                        addJSONObject(username.getText().toString(), password.getText().toString());
+                                        Toast.makeText(getApplicationContext(), "Sign-up successful. Welcome to Pet Tracker!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(SignUp.this, CalendarHomePage.class);
+                                        intent.putExtra("user", username.getText().toString());
+                                        startActivity(intent);
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getApplicationContext(), "Please retype passwords, they don't match!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
                             }
                             else
                             {
-                                Toast.makeText(getApplicationContext(), "Please retype passwords, they don't match!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "There's already an existing user with this information! Please retry!", Toast.LENGTH_SHORT).show();
                             }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

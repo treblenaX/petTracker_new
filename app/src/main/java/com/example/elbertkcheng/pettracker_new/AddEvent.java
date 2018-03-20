@@ -25,6 +25,8 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
     private String eventAddress;
     private String startTime;
     private String endTime;
+    private String startTimeAMPM;
+    private String endTimeAMPM;
     private int months;
     private int days;
     private int years;
@@ -32,7 +34,7 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
 
     public void addIntoDatabase(EventRepo repo) throws ParseException {
         Log.i("Check", getEventName().toString() + getEventAddress().toString() + getMonths() + getDays() + getYears() + getUsername());
-        repo.insert(new eventBlock(getEventName().toString(), getMonths() + "/" + getDays() + "/" + getYears(), getEventAddress().toString(), getUsername(), getStartTime(), getEndTime()));
+        repo.insert(new eventBlock(getEventName().toString(), getMonths() + "/" + getDays() + "/" + getYears(), getEventAddress().toString(), getUsername(), getStartTime() + " " + getStartTimeAMPM(), getEndTime() + " " + getEndTimeAMPM()));
     }
 
     @Override
@@ -53,6 +55,8 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
         addEventAddress = (EditText) findViewById(R.id.addEventAddress);
         addEventStartTime = (Spinner) findViewById(R.id.startTime);
         addEventEndTime = (Spinner) findViewById(R.id.endTime);
+        Spinner stAMPM = (Spinner) findViewById(R.id.startTimeAMPM);
+        Spinner etAMPM = (Spinner) findViewById(R.id.endTimeAMPM);
         Spinner monthSpinner = (Spinner) findViewById(R.id.MonthDropDown);
         Spinner daysSpinner = (Spinner) findViewById(R.id.DayDropDown);
         Spinner yearsSpinner = (Spinner) findViewById(R.id.YearDropDown);
@@ -82,6 +86,8 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
         ArrayAdapter<CharSequence> yAdapter = ArrayAdapter.createFromResource(this, R.array.years, android.R.layout.simple_spinner_dropdown_item);
         ArrayAdapter<CharSequence> stAdapter = ArrayAdapter.createFromResource(this, R.array.times, android.R.layout.simple_spinner_dropdown_item);
         ArrayAdapter<CharSequence> etAdapter = ArrayAdapter.createFromResource(this, R.array.times, android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> stAdapterAMPM = ArrayAdapter.createFromResource(this, R.array.ampm, android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> etAdapterAMPM = ArrayAdapter.createFromResource(this, R.array.ampm, android.R.layout.simple_spinner_dropdown_item);
 
 
         monthSpinner.setAdapter(mAdapter);
@@ -89,12 +95,16 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
         yearsSpinner.setAdapter(yAdapter);
         addEventStartTime.setAdapter(stAdapter);
         addEventEndTime.setAdapter(etAdapter);
+        stAMPM.setAdapter(stAdapterAMPM);
+        etAMPM.setAdapter(etAdapterAMPM);
 
         monthSpinner.setOnItemSelectedListener(this);
         daysSpinner.setOnItemSelectedListener(this);
         yearsSpinner.setOnItemSelectedListener(this);
         addEventStartTime.setOnItemSelectedListener(this);
         addEventEndTime.setOnItemSelectedListener(this);
+        stAMPM.setOnItemSelectedListener(this);
+        etAMPM.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -118,6 +128,14 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
         if (adapterView.getId() == R.id.endTime)
         {
             setEndTime((String)adapterView.getItemAtPosition(i));
+        }
+        if (adapterView.getId() == R.id.startTimeAMPM)
+        {
+            setStartTimeAMPM((String)adapterView.getItemAtPosition(i));
+        }
+        if (adapterView.getId() == R.id.endTimeAMPM)
+        {
+            setEndTimeAMPM((String)adapterView.getItemAtPosition(i));
         }
 
     }
@@ -211,5 +229,21 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getStartTimeAMPM() {
+        return startTimeAMPM;
+    }
+
+    public void setStartTimeAMPM(String startTimeAMPM) {
+        this.startTimeAMPM = startTimeAMPM;
+    }
+
+    public String getEndTimeAMPM() {
+        return endTimeAMPM;
+    }
+
+    public void setEndTimeAMPM(String endTimeAMPM) {
+        this.endTimeAMPM = endTimeAMPM;
     }
 }

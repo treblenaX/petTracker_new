@@ -70,7 +70,9 @@ public class LogIn extends AppCompatActivity {
         for(int i = 0; i < arr.length(); i++)
         {
             String dbUsername = arr.getJSONObject(i).getString("username");
+            Log.i("JSON Data", arr.getJSONObject(i).getString("username"));
             String dbPassword = arr.getJSONObject(i).getString("password");
+            Log.i("JSON Data", arr.getJSONObject(i).getString("password"));
 
             if(dbUsername.equals(username_input) && dbPassword.equals(password_input))
             {

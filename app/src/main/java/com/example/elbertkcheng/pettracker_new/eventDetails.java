@@ -37,10 +37,11 @@ public class eventDetails extends AppCompatActivity {
     private EventRepo dataRepo;
     TextView displayEventName;
     TextView displayEventTime;
+    TextView displayEventDate;
     private String eventAddress;
     private ArrayList<eventBlock> grabbedEvents;
     private int position;
-    public Activity act;
+    public static Activity act;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class eventDetails extends AppCompatActivity {
         setContentView(R.layout.activity_event_details);
 
         getSupportActionBar().setTitle("Event Details");
-
+        this.act = this;
         //Get the object passed through the intent
         setGrabbedEvents((ArrayList) getIntent().getSerializableExtra("object"));
         setPosition((int) getIntent().getSerializableExtra("position"));
@@ -61,12 +62,14 @@ public class eventDetails extends AppCompatActivity {
 
         displayEventName = (TextView) findViewById(R.id.displayEventName);
         displayEventTime = (TextView) findViewById(R.id.displayEventTime);
+        displayEventDate = (TextView) findViewById(R.id.displayEventDate);
         Button openInMaps = (Button) findViewById(R.id.openInMap);
         Button updateEvent = (Button) findViewById(R.id.editEventButton);
 
         Log.i("TITLE", grabbedEvents.get(position).toString());
         displayEventName.setText(grabbedEvents.get(position).getEventName());
         displayEventTime.setText(grabbedEvents.get(position).getStarttime() + " to " + grabbedEvents.get(position).getEndtime());
+        displayEventDate.setText(grabbedEvents.get(position).getEventDate());
 
         openInMaps.setOnClickListener((new View.OnClickListener()
         {

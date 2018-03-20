@@ -1,13 +1,21 @@
 package com.example.elbertkcheng.pettracker_new;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -32,10 +40,13 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 public class CalendarHomePage extends AppCompatActivity {
+    public static final String CHANNEL_ID = "Test";
+    public static final int NOTIFICATION_TEST_ID = 1;
     private DrawerLayout mDrawer;
     private EventRepo dataRepo;
     private String user;
@@ -60,6 +71,7 @@ public class CalendarHomePage extends AppCompatActivity {
                 caldroidFragment.setBackgroundDrawableForDate(green, eventList.get(i).getEventDateTime());
             }
         }
+
         caldroidFragment.refreshView();
     }
 
@@ -85,10 +97,10 @@ public class CalendarHomePage extends AppCompatActivity {
 
     private void initializeSampleData(EventRepo db) throws ParseException {
         //Sample Data that will be included if the database is non-existent or empty.
-        db.insert(new eventBlock( "SAMPLE:Grooming", "03/03/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
-        db.insert(new eventBlock( "SAMPLE:Vet", "01/01/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
-        db.insert(new eventBlock("SAMPLE:Playdate", "05/08/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
-        db.insert(new eventBlock( "SAMPLE:Playdate", "06/9/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "07:00 AM", "09:00 AM"));
+        db.insert(new eventBlock( "SAMPLE:Grooming", "03/03/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "7:00 AM", "9:00 AM"));
+        db.insert(new eventBlock( "SAMPLE:Vet", "01/01/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "7:00 AM", "9:00 AM"));
+        db.insert(new eventBlock("SAMPLE:Playdate", "05/08/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "7:00 AM", "9:00 AM"));
+        db.insert(new eventBlock( "SAMPLE:Playdate", "06/9/2018", "1122 228th Avenue SE Sammamish, WA 98075", getUser(), "7:00 AM", "9:00 AM"));
     }
 
     private void createCalendar()
@@ -148,6 +160,7 @@ public class CalendarHomePage extends AppCompatActivity {
             e.printStackTrace();
         }
         this.eventList = this.dataRepo.getUserEventList();
+
     }
 
     private void refreshListView(ListView l)
@@ -259,6 +272,15 @@ public class CalendarHomePage extends AppCompatActivity {
             }
         });
 
+        Intent myIntent = new Intent(this, CalendarHomePage.class);
+        AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, myIntent, 0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.MINUTE, 00);
+        calendar.set(Calendar.SECOND, 00);
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
         //Navigation Menu
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -283,17 +305,23 @@ public class CalendarHomePage extends AppCompatActivity {
                                 Log.v("add event", "event added");
                                 return true;
                             case R.id.nav_settings:
-                                getApplication().deleteDatabase(DATABASE_NAME);
-
-                                clearCalendar(eventList);
 
                                 dataRepo = new EventRepo(getApplicationContext(), DATABASE_NAME);
+                                for (int i = 0; i < eventList.size(); i++)
+                                {
+                                    dataRepo.delete(eventList.get(i).getEventID());
+                                }
+
+                                clearCalendar(eventList);
                                 adapter.notifyDataSetChanged();
                                 refreshListView(mListView);
                                 caldroidFragment.refreshView();
                                 mDrawer.closeDrawers();
                                 return true;
                             case R.id.nav_logout:
+                                Intent tent = new Intent(getApplicationContext(), LogIn.class);
+                                startActivity(tent);
+                                finish();
                                 return true;
 
                             default:
@@ -302,8 +330,6 @@ public class CalendarHomePage extends AppCompatActivity {
                     }
                 }
         );
-
-
     }
 }
 
