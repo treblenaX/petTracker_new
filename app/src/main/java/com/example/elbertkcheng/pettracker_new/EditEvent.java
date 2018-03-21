@@ -2,7 +2,6 @@ package com.example.elbertkcheng.pettracker_new;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,7 +46,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
     public void updateDatabase(EventRepo repo) throws ParseException {
 
         //Sets the existing eventBlock with the new values grabbed from the fields
-        Log.i("Check", getEventName().toString() + getEventAddress().toString() + getMonths() + getDays() + getYears() + existing.getEventUser());
         existing.setEventDate(getMonths() + "/" + getDays() + "/" + getYears());
         existing.setEventName(getEventName());
         existing.setAddress(getEventAddress());
@@ -63,6 +61,7 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
 
         //Brings the selected eventBlock over from the eventDetails class
         setExisting((eventBlock)getIntent().getSerializableExtra("object"));
+        getSupportActionBar().setTitle("Edit Event");
 
         addEventName = (EditText) findViewById(R.id.addEventName);
         addEventAddress = (EditText) findViewById(R.id.addEventAddress);
@@ -97,7 +96,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         if (cal.get(Calendar.MONTH) != 0 )
         {
             int spinnerPosition = mAdapter.getPosition("" + (cal.get(Calendar.MONTH) + 1));
-            Log.i("spinner", "" + spinnerPosition);
             monthSpinner.setSelection(spinnerPosition);
         }
 
@@ -105,7 +103,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         if (cal.get(Calendar.DAY_OF_MONTH) != 0 )
         {
             int spinnerPosition = dAdapter.getPosition("" + cal.get(Calendar.DAY_OF_MONTH));
-            Log.i("spinner", "" + spinnerPosition);
             daysSpinner.setSelection(spinnerPosition);
         }
 
@@ -113,7 +110,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         if (cal.get(Calendar.YEAR) != 0 )
         {
             int spinnerPosition = yAdapter.getPosition("" + cal.get(Calendar.YEAR));
-            Log.i("spinner", "" + spinnerPosition);
             yearsSpinner.setSelection(spinnerPosition);
         }
 
@@ -123,14 +119,9 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         String existingAMPM = scan.next();
         scan.close();
 
-        Log.i("TEST", existingST);
-        Log.i("TEST", existingAMPM);
-
         Scanner scan2 = new Scanner(getExisting().getEndtime());
         String existingET = scan2.next();
         String existingEtAMPM = scan2.next();
-        Log.i("TEST", existingET);
-        Log.i("TEST", existingEtAMPM);
         scan2.close();
 
 
@@ -138,7 +129,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         if (existingST != null)
         {
             int spinnerPosition = stAdapter.getPosition(existingST);
-            Log.i("spinner", "" + spinnerPosition);
             addEventStartTime.setSelection(spinnerPosition);
         }
 
@@ -146,7 +136,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         if (existingET != null)
         {
             int spinnerPosition = stAdapter.getPosition(existingET);
-            Log.i("spinner", "" + spinnerPosition);
             addEventEndTime.setSelection(spinnerPosition);
         }
 
@@ -154,7 +143,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         if (existingAMPM != null)
         {
             int spinnerPosition = stAdapterAMPM.getPosition(existingAMPM);
-            Log.i("spinner", "" + spinnerPosition);
             startTimeAMPM.setSelection(spinnerPosition);
         }
 
@@ -162,7 +150,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         if (existingEtAMPM != null)
         {
             int spinnerPosition = etAdapterAMPM.getPosition(existingEtAMPM);
-            Log.i("spinner", "" + spinnerPosition);
             endTimeAMPM.setSelection(spinnerPosition);
         }
 

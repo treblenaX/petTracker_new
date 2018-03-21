@@ -136,43 +136,6 @@ public class EventRepo {
         this.UserEventList = eventList;
     }
 
-
-//    public eventBlock getEventById(int id) throws ParseException {
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//        String selectQuery = "SELECT " +
-//                eventBlock.KEY_ID + " , " +
-//                eventBlock.KEY_eventName + ", " +
-//                eventBlock.KEY_eventDate + ", " +
-//                eventBlock.KEY_address + ", " +
-//                eventBlock.KEY_USER + ", " +
-//                eventBlock.KEY_eventStartTime + ", " +
-//                eventBlock.KEY_eventEndTime +
-//                " FROM " + eventBlock.TABLE
-//                + " WHERE " +
-//                eventBlock.KEY_ID + "= ?";
-//        int count = 0;
-//        eventBlock event = new eventBlock();
-//
-//        Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(id)});
-//
-//        if (cursor.moveToFirst())
-//        {
-//            do {
-//                event.setEventID(cursor.getInt(cursor.getColumnIndex(eventBlock.KEY_ID)));
-//                event.setEventName(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_eventName)));
-//                event.setEventDate(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_eventDate)));
-//                event.setAddress(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_address)));
-//                event.setEventUser(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_USER)));
-//                event.setStarttime(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_eventStartTime)));
-//                event.setEndtime(cursor.getString(cursor.getColumnIndex(eventBlock.KEY_eventEndTime)));
-//            } while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        db.close();
-//        return event;
-//    }
-
     public ArrayList<eventBlock> getUserEventList() {
         return this.UserEventList;
     }

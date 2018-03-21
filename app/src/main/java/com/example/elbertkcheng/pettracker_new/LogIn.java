@@ -71,9 +71,7 @@ public class LogIn extends AppCompatActivity {
         for(int i = 0; i < arr.length(); i++)
         {
             String dbUsername = arr.getJSONObject(i).getString("username");
-            Log.i("JSON Data", arr.getJSONObject(i).getString("username"));
             String dbPassword = arr.getJSONObject(i).getString("password");
-            Log.i("JSON Data", arr.getJSONObject(i).getString("password"));
 
             if(dbUsername.equals(username_input) && dbPassword.equals(password_input))
             {
@@ -137,7 +135,6 @@ public class LogIn extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                Log.i("ButtonTester", "Button is pressed!");
                 startActivity(new Intent(LogIn.this, SignUp.class));
             }
 
@@ -150,11 +147,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                Log.i("OK", "Ok button is pressed!");
                 try {
-                    Log.i("username", username_LOGIN.getText().toString());
-                    Log.i("password", password_LOGIN.getText().toString());
-
                     if (compareData(username_LOGIN.getText().toString(), password_LOGIN.getText().toString()) == true)
                     {
                         String user = username_LOGIN.getText().toString();
@@ -168,7 +161,6 @@ public class LogIn extends AppCompatActivity {
                     }
                     else
                     {
-                        Log.i("LOGIN", "NO LOGIN FOUND");
                         Toast.makeText(getApplicationContext(), "Log-in information invalid, please try again!", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {

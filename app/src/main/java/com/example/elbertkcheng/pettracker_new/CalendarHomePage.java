@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -124,13 +123,11 @@ public class CalendarHomePage extends AppCompatActivity {
             }
             else
             {
-                Log.i("Database", "Database EXISTS!");
                 return true;
             }
         }
 
         //Else, return false to create the sample database.
-        Log.i("Database", "Database DOESN'T exist!");
         return false;
     }
 
@@ -157,7 +154,6 @@ public class CalendarHomePage extends AppCompatActivity {
             @Override
             public void run() {
                 updateData();
-                Log.i("New Data", eventList.toString());
                 adapter = new myAdapter(getApplicationContext(), eventList);
                 adapter.notifyDataSetChanged();
                 mListView.setAdapter(adapter);
@@ -243,7 +239,6 @@ public class CalendarHomePage extends AppCompatActivity {
 
             @Override
             public void onRefresh() {
-                Log.i("REFRESH", "REFRESHINTERACTED");
                 if (mListView != null)
                 {
                     refreshListView(mListView);
@@ -277,7 +272,6 @@ public class CalendarHomePage extends AppCompatActivity {
                                 mDrawer.closeDrawers();
                                 startActivity(intent);
 
-                                Log.v("add event", "event added");
                                 return true;
                             case R.id.nav_deletedata:
 
