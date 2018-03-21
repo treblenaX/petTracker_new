@@ -4,11 +4,13 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by elber on 3/3/2018.
- */
 
 public class DBHelper extends SQLiteOpenHelper {
+    /**
+     *  Creates an SQLiteDatabase with rawQueries and sets columns with the keys. Upgrades when columns are
+     *  added or deleted.
+     */
+
     //Version number to upgrade database version - Note: each time you Add, Edit table, you need to change the number.
     private static final int DATABASE_VERSION = 7;
 

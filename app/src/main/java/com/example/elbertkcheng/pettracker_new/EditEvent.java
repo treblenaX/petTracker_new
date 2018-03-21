@@ -9,15 +9,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    /**
+     * The EditEvent class receives the serialized object from the eventDetail class and allows the user
+     * to update the event in the database with new values.
+     */
     private static final String DATABASE_NAME = "events.db";
     private EditText addEventName;
     private EditText addEventAddress;
@@ -26,7 +30,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
     private Spinner monthSpinner;
     private Spinner daysSpinner;
     private Spinner yearsSpinner;
-    private String username;
     private String eventName;
     private String eventAddress;
     private String startTime;
@@ -42,6 +45,8 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
     private eventBlock existing;
 
     public void updateDatabase(EventRepo repo) throws ParseException {
+
+        //Sets the existing eventBlock with the new values grabbed from the fields
         Log.i("Check", getEventName().toString() + getEventAddress().toString() + getMonths() + getDays() + getYears() + existing.getEventUser());
         existing.setEventDate(getMonths() + "/" + getDays() + "/" + getYears());
         existing.setEventName(getEventName());
@@ -56,7 +61,7 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
 
-        //Brings the selected eventBlock over
+        //Brings the selected eventBlock over from the eventDetails class
         setExisting((eventBlock)getIntent().getSerializableExtra("object"));
 
         addEventName = (EditText) findViewById(R.id.addEventName);
@@ -82,11 +87,12 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         ArrayAdapter<CharSequence> stAdapterAMPM = ArrayAdapter.createFromResource(this, R.array.ampm, android.R.layout.simple_spinner_dropdown_item);
         ArrayAdapter<CharSequence> etAdapterAMPM = ArrayAdapter.createFromResource(this, R.array.ampm, android.R.layout.simple_spinner_dropdown_item);
 
-
+        //Set a calendar object to reference off specific months, days, etc for the if statements below
         Date existingDate = getExisting().getEventDateTime();
         Calendar cal = new GregorianCalendar().getInstance();
         cal.setTime(existingDate);
 
+        //The if statements set the Spinners to the value of the existing object
         monthSpinner.setAdapter(mAdapter);
         if (cal.get(Calendar.MONTH) != 0 )
         {
@@ -111,6 +117,7 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
             yearsSpinner.setSelection(spinnerPosition);
         }
 
+        //Scanner to scan out the start time then another one to scan out the end time
         Scanner scan = new Scanner(getExisting().getStarttime());
         String existingST = scan.next();
         String existingAMPM = scan.next();
@@ -125,6 +132,7 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         Log.i("TEST", existingET);
         Log.i("TEST", existingEtAMPM);
         scan2.close();
+
 
         addEventStartTime.setAdapter(stAdapter);
         if (existingST != null)
@@ -171,6 +179,7 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
             @Override
             public void onClick(View v)
             {
+                //When clicked, save the fields into their appropriate variables then update database with the private EventRepo object.
                 setEventName(addEventName.getText().toString());
                 setEventAddress(addEventAddress.getText().toString());
                 setMonths(Integer.parseInt((String)monthSpinner.getSelectedItem()));
@@ -183,6 +192,7 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
 
                 try {
                     updateDatabase(getDataRepo());
+                    Toast.makeText(getApplicationContext(), "Event successfully updated!", Toast.LENGTH_SHORT).show();
                     eventDetails.act.finish();
                     finish();
                 } catch (ParseException e) {
@@ -197,6 +207,7 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
             @Override
             public void onClick(View v) {
                 dataRepo.delete(existing.getEventID());
+                Toast.makeText(getApplicationContext(), "Event successfully deleted!", Toast.LENGTH_SHORT).show();
                 eventDetails.act.finish();
                 finish();
             }
@@ -261,10 +272,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
         return dataRepo;
     }
 
-    public void setDataRepo(EventRepo dataRepo) {
-        this.dataRepo = dataRepo;
-    }
-
     public String getEventName() {
         return eventName;
     }
@@ -279,14 +286,6 @@ public class EditEvent extends AppCompatActivity implements AdapterView.OnItemSe
 
     public void setEventAddress(String eventAddress) {
         this.eventAddress = eventAddress;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getStartTime() {

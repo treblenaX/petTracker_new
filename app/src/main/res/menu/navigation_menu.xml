@@ -8,8 +8,8 @@
              android:title="Add Event" />
 
         <item
-            android:id="@+id/nav_settings"
-            android:title="Delete Data" />
+            android:id="@+id/nav_deletedata"
+            android:title="Delete User Data" />
 
          <item android:id="@+id/nav_logout"
             android:title="Log Out" />

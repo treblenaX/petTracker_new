@@ -15,17 +15,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Calendar;
 
 public class SignUp extends AppCompatActivity {
+
+    /**
+     * This class handles the sign-up of the users and writes the new sign-up data into a JSON file
+     * which would then be referenced by in the LogIn.class
+     */
+
     private static final String LOGIN_DATABASE = "loginDatabase.json";
     EditText username;
     EditText password;
@@ -37,8 +39,10 @@ public class SignUp extends AppCompatActivity {
     {
         String str = "";
         try {
+            //Opens the JSON file for reading
             InputStream inputStream = getApplicationContext().openFileInput(LOGIN_DATABASE);
 
+            //If the file isn't empty gather all of the file text contents into String str and return it.
             if (inputStream != null)
             {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -63,8 +67,12 @@ public class SignUp extends AppCompatActivity {
     }
 
     public boolean compareData(String username_input, String password_input) throws JSONException, FileNotFoundException {
-
+        //Assign JSONArray arr with the EXISTING arrays of data read from the file
         JSONArray arr = new JSONArray(readFromFile());
+
+        /**For loop to cross-check the user-inputed information with the information in EACH object
+         * and return true if both the username AND the password are equal. If not, return false.
+         */
 
         for(int i = 0; i < arr.length(); i++)
         {
@@ -82,9 +90,19 @@ public class SignUp extends AppCompatActivity {
     }
 
     public void addJSONObject(String username, String password) throws JSONException, IOException {
-        //Transfers the old data into the new data file.
+
+        //Existing JSONArray of JSONObjects grabbed from the database file
         JSONArray arr = new JSONArray(readFromFile());
+        //New, empty JSONArray ready to store information
         JSONArray newArr = new JSONArray();
+
+        /**
+         * This method reads in the existing data of the JSONArray arr and saves it into the new
+         * JSONArray newArr along with the new JSONObject of the new sign-up details
+         * and then deletes the database and saves a new one with the updated data.
+         *
+         * TL;DR: Overwrites the LOGIN_DATABASE data
+         */
 
         for(int i = 0; i < arr.length(); i++)
         {
@@ -97,6 +115,7 @@ public class SignUp extends AppCompatActivity {
             obj.put("username", dbUsername);
             obj.put("password", dbPassword);
         }
+
         //Delete file for the new file to come in
         deleteFile(LOGIN_DATABASE);
 
@@ -116,6 +135,7 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        getSupportActionBar().setTitle("Sign-Up");
         username = (EditText)findViewById(R.id.username_SIGNUP);
         password = (EditText)findViewById(R.id.password_SIGNUP);
         passwordRetry = (EditText)findViewById(R.id.passwordRetry_SIGNUP);
@@ -127,6 +147,16 @@ public class SignUp extends AppCompatActivity {
                     public void onClick(View view)
                     {
                         try {
+                            /**
+                             * First if statement: Uses the earlier compareData method to see if there
+                             * are existing usernames with the inputted username and only allows
+                             * the process to go through if the username is UNIQUE.
+                             *
+                             * Second if statement: Checks if the username input or the password input is empty or only contains spaces.
+                             *
+                             * Third if statement: Check if the inputted password is equal to the
+                             * password confirmation field. True = pass, false = error.
+                             */
                             if (compareData(username.getText().toString(), password.getText().toString()) == false)
                             {
                                 if (username.getText().toString().trim().isEmpty()|| password.getText().toString().trim().isEmpty() )

@@ -1,17 +1,16 @@
 package com.example.elbertkcheng.pettracker_new;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by elber on 3/2/2018.
- */
-
 public class eventBlock implements Comparable<eventBlock>, Serializable {
+    /**
+     * The eventBlock class is the main object of the application that contains necessary
+     * event information in its private variables, most of which can be accessed with its getters and
+     * setters.
+     */
     private static final String eventDatePatternInput = "MM/dd/yyyy HH:mm aa 'until' HH:mm aa";
     private static final String eventDatePatternOutput = "MMMM d, EEE";
     private int eventID;
@@ -35,9 +34,6 @@ public class eventBlock implements Comparable<eventBlock>, Serializable {
     public static final String KEY_eventEndTime = "endtime";
     public static final String KEY_address = "address";
 
-    public eventBlock() throws ParseException {
-    }
-
     public eventBlock(String eventName, String eventDate, String address, String user, String starttime, String endtime) throws ParseException {
         this.eventName = eventName;
         this.eventDate = eventDate;
@@ -53,12 +49,6 @@ public class eventBlock implements Comparable<eventBlock>, Serializable {
         }
 
 
-    }
-
-
-    public String getFormattedDate()
-    {
-        return this.eventDateObject.toString();
     }
 
     public String getEventName() {
@@ -119,10 +109,6 @@ public class eventBlock implements Comparable<eventBlock>, Serializable {
 
     public String getEventUser() {
         return eventUser;
-    }
-
-    public void setEventUser(String eventUser) {
-        this.eventUser = eventUser;
     }
 
     public String getStarttime() {

@@ -11,10 +11,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-
+import android.widget.Toast;
 import java.text.ParseException;
 
 public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+        /**
+         * AddEvent class that uses the EventRepo object to insert the newly created event into
+         * the database. The new event is created from the values inputted through the text fields and the
+         * Spinners (drop-down menus).
+         */
+
     private static final String DATABASE_NAME = "events.db";
     private EditText addEventName;
     private EditText addEventAddress;
@@ -33,7 +39,7 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
     private EventRepo dataRepo = new EventRepo(this, DATABASE_NAME);
 
     public void addIntoDatabase(EventRepo repo) throws ParseException {
-        Log.i("Check", getEventName().toString() + getEventAddress().toString() + getMonths() + getDays() + getYears() + getUsername());
+        //Using the getters and the EventRepo object, it inserts the new eventBlock
         repo.insert(new eventBlock(getEventName().toString(), getMonths() + "/" + getDays() + "/" + getYears(), getEventAddress().toString(), getUsername(), getStartTime() + " " + getStartTimeAMPM(), getEndTime() + " " + getEndTimeAMPM()));
     }
 
@@ -45,9 +51,9 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
         getSupportActionBar().setTitle("Add Event");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //The username is set to ensure that the class knows who's logged in.
         setUsername((String) getIntent().getSerializableExtra("user"));
         Log.i("USER IS", getUsername());
-
         Intent intent = new Intent(getApplicationContext(), eventDetails.class);
         intent.putExtra("user", getUsername());
 
@@ -72,6 +78,7 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
 
                 try {
                     addIntoDatabase(getDataRepo());
+                    Toast.makeText(getApplicationContext(), "Event successfully added!", Toast.LENGTH_SHORT).show();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -185,10 +192,6 @@ public class AddEvent extends AppCompatActivity implements AdapterView.OnItemSel
 
     public EventRepo getDataRepo() {
         return dataRepo;
-    }
-
-    public void setDataRepo(EventRepo dataRepo) {
-        this.dataRepo = dataRepo;
     }
 
     public String getEventName() {

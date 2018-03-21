@@ -1,21 +1,11 @@
 package com.example.elbertkcheng.pettracker_new;
 
-import android.app.AlarmManager;
-import android.app.Application;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
-import android.os.ResultReceiver;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -23,46 +13,36 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.roomorama.caldroid.CaldroidFragment;
-
 import java.io.File;
-
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 
 public class CalendarHomePage extends AppCompatActivity {
-    public static final String CHANNEL_ID = "Test";
-    public static final int NOTIFICATION_TEST_ID = 1;
+    /**
+     * The CalendarHomePage class is the main class of the application that contains the CalendarView(Caldroid)
+     * and the ListView which displays the eventList that is grabbed from the EventRepo class.
+     */
+    private CaldroidFragment caldroidFragment;
     private DrawerLayout mDrawer;
     private EventRepo dataRepo;
     private String user;
-    public ListAdapter mAdapter;
     public myAdapter adapter;
     public ListView mListView;
     public SwipeRefreshLayout srl;
     public ArrayList<eventBlock> eventList;
 
-    //Calendar
-    private CaldroidFragment caldroidFragment;
-
     private static final String DATABASE_NAME = "events.db";
 
     private void setCustomResource(ArrayList<eventBlock> eventList)
     {
+        //Color the eventdates
         if (caldroidFragment != null)
         {
             ColorDrawable green = new ColorDrawable(Color.GREEN);
@@ -72,11 +52,13 @@ public class CalendarHomePage extends AppCompatActivity {
             }
         }
 
+        //Refresh the CaldroidView
         caldroidFragment.refreshView();
     }
 
     private void clearCalendar(ArrayList<eventBlock> eventList)
     {
+        //Clears the calendar of all its colored dates with events from the eventList.
         if (caldroidFragment != null)
         {
             ColorDrawable green = new ColorDrawable(Color.GREEN);
@@ -154,6 +136,7 @@ public class CalendarHomePage extends AppCompatActivity {
 
     private void updateData()
     {
+        //Updates the dataRepo with a re-grab of the user-specified event list.
         try {
             this.dataRepo.setUserEventList(getUser());
         } catch (ParseException e) {
@@ -165,6 +148,7 @@ public class CalendarHomePage extends AppCompatActivity {
 
     private void refreshListView(ListView l)
     {
+        //Refreshes the ListView by removing the views then creating it again
         l.removeAllViewsInLayout();
 
         //Delays until data is done loading.
@@ -232,7 +216,7 @@ public class CalendarHomePage extends AppCompatActivity {
         caldroidFragment.refreshView();
 
 
-        //ListView
+        //Set ListView adapter
         adapter = new myAdapter(getApplicationContext(), eventList);
         setCustomResource(eventList);
 
@@ -272,15 +256,6 @@ public class CalendarHomePage extends AppCompatActivity {
             }
         });
 
-        Intent myIntent = new Intent(this, CalendarHomePage.class);
-        AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, myIntent, 0);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 12);
-        calendar.set(Calendar.MINUTE, 00);
-        calendar.set(Calendar.SECOND, 00);
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-
         //Navigation Menu
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -304,13 +279,15 @@ public class CalendarHomePage extends AppCompatActivity {
 
                                 Log.v("add event", "event added");
                                 return true;
-                            case R.id.nav_settings:
+                            case R.id.nav_deletedata:
 
                                 dataRepo = new EventRepo(getApplicationContext(), DATABASE_NAME);
                                 for (int i = 0; i < eventList.size(); i++)
                                 {
                                     dataRepo.delete(eventList.get(i).getEventID());
                                 }
+
+                                Toast.makeText(getApplicationContext(), "User data completely deleted!", Toast.LENGTH_SHORT).show();
 
                                 clearCalendar(eventList);
                                 adapter.notifyDataSetChanged();
@@ -320,6 +297,7 @@ public class CalendarHomePage extends AppCompatActivity {
                                 return true;
                             case R.id.nav_logout:
                                 Intent tent = new Intent(getApplicationContext(), LogIn.class);
+                                Toast.makeText(getApplicationContext(), "Log-out successful!", Toast.LENGTH_SHORT).show();
                                 startActivity(tent);
                                 finish();
                                 return true;
